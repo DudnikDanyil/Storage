@@ -1,25 +1,8 @@
 import './Registration.css';
 import React from 'react';
-// function TypeInputSwitch()
-// {
-// const INPUT_ATTR = document.querySelector('.password-input__item');
-// const SWITCH = document.querySelector('.password-input__switch');
-// let type = INPUT_ATTR.getAttribute('type')
-
-// if(type === 'password'){
-//   INPUT_ATTR.setAttribute('type', 'text')
-//   SWITCH.setAttribute('aria-checked', 'true')
-//   SWITCH.classList.add('password-input__switch--active')
-// }
-// else{
-//   INPUT_ATTR.setAttribute('type', 'password')
-//   SWITCH.setAttribute('aria-checked', 'false')
-//   SWITCH.classList.remove('password-input__switch--active')
-// }
-// };
-
 
 let Registration = () =>{
+
   let [type,setType] = React.useState('password');
   const [activeClass, setClassName] = React.useState('');
      let TypeInputSwitch = () => {
