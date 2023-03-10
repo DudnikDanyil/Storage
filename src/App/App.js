@@ -4,7 +4,7 @@ import Form from '../Form/Form';
 
 let App = () =>{
   return (
-     <></>
+     <Form/>
   );
 }
 
