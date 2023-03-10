@@ -4,7 +4,7 @@
   .register-view__password-input{
       position: relative;
   }
-  .password-input__switcher
+  .password-input__switch
   {
       all:unset;
       display: inline-block;
@@ -18,7 +18,7 @@
       height: 25px;
       background: url('./eye-close.svg') no-repeat;
   }
-  .password-input__switcher--active
+  .password-input__switch--active
   {
     background: url('./eye-open.svg') no-repeat;
   }
