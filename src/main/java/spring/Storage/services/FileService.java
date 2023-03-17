@@ -18,7 +18,7 @@ import spring.Storage.dto.InfoPersonDTO;
 import spring.Storage.exception.AbsentPersonIdException;
 import spring.Storage.exception.FileUploadException;
 import spring.Storage.models.Person;
-import spring.Storage.models.User_Data;
+import spring.Storage.models.UserData;
 import spring.Storage.repositories.PersonRepository;
 import spring.Storage.repositories.UserDataRepository;
 
@@ -29,6 +29,7 @@ import java.io.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FileService {
@@ -38,6 +39,8 @@ public class FileService {
 
     private final ConfigService configService;
 
+    private final ModelMapper modelMapper;
+
     @Value("${upload.path}") // ловим наш файл и записываем в переменную
     private String uploadPath;
 
@@ -45,10 +48,11 @@ public class FileService {
     @Autowired
     public FileService(PersonRepository personRepository,
                        UserDataRepository userDataRepository,
-                       ConfigService configService) {
+                       ConfigService configService, ModelMapper modelMapper) {
         this.personRepository = personRepository;
         this.userDataRepository = userDataRepository;
         this.configService = configService;
+        this.modelMapper = modelMapper;
     }
 
     // Возврат информации по клиенту в виде JSON по названию получаемого файла
@@ -97,7 +101,7 @@ public class FileService {
                 String dataFile = fileUploadDTO.getDateFile()[i];
                 String typeFile = fileUploadDTO.getTypeFile()[i];
 
-                User_Data personToAdd = new User_Data();
+                UserData personToAdd = new UserData();
 
                 personToAdd.setNameFile(nameFile);
                 personToAdd.setDateFile(dataFile);
@@ -187,6 +191,30 @@ public class FileService {
             throw new FileUploadException("An error occurred while deleting a file!");
         }
         throw new FileUploadException("No cookies!");
+    }
+
+    @Transactional
+    public List<InfoPersonDTO> searchFileService(HttpServletRequest request) throws AbsentPersonIdException, FileUploadException {
+
+        if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies();
+
+            String userDataId = configService.decodingJWTToken(cookies);
+
+            List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileStartingWith(Integer.parseInt(userDataId),  request.getParameter("nameFile"));
+
+            if(!personList.isEmpty()) {
+                return personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
+            }
+            throw new FileUploadException("File matching the search will be rejected");
+            }
+
+        throw new AbsentPersonIdException("No cookies");
+    }
+
+
+    public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
+        return modelMapper.map(user_data, InfoPersonDTO.class);
     }
 }
 

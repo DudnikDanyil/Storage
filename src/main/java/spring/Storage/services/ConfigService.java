@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.Storage.dto.InfoPersonDTO;
 import spring.Storage.exception.AbsentPersonIdException;
-import spring.Storage.models.User_Data;
+import spring.Storage.models.UserData;
 
 import javax.servlet.http.Cookie;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class ConfigService {
         this.modelMapper = modelMapper;
     }
 
-    public InfoPersonDTO convertToInfoPersonDTO(User_Data user_data) {
+    public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
         return modelMapper.map(user_data, InfoPersonDTO.class);
     }
 
@@ -65,5 +65,15 @@ public class ConfigService {
 
         return userId;
     }
+
+    public List<InfoPersonDTO> listFillingInfoPersonDTO(List<InfoPersonDTO> PersonListInf) {
+        List<InfoPersonDTO> PersonListInf2 = new ArrayList<>();
+        for (InfoPersonDTO personInf : PersonListInf) {
+            personInf.setData("true");
+            PersonListInf2.add(personInf);
+        }
+        return PersonListInf2;
+    }
+
 
 }

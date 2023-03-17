@@ -1,11 +1,15 @@
 package spring.Storage.repositories;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import spring.Storage.models.User_Data;
+import org.springframework.data.repository.query.Param;
+import spring.Storage.models.Person;
+import spring.Storage.models.UserData;
 
-public interface UserDataRepository extends CrudRepository<User_Data, Integer> {
 
-//    User_Data findByUser_data_idAndNameFile(String nameFail);
+import java.util.List;
 
+public interface UserDataRepository extends CrudRepository<UserData, Integer> {
    void deleteByUserDataIdAndNameFile(int userId, String nameFile);
+   List<UserData> findAllByUserDataIdAndNameFileStartingWith(int userDataId, String nameFile);
 }

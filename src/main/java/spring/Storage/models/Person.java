@@ -13,8 +13,8 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(mappedBy = "owner")
-    private List<User_Data> information;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserData> information;
     private String email;
 
     private String password;
@@ -80,11 +80,11 @@ public class Person {
         this.nameFile = nameFile;
     }
 
-    public List<User_Data> getInformation() {
+    public List<UserData> getInformation() {
         return information;
     }
 
-    public void setInformation(List<User_Data> information) {
+    public void setInformation(List<UserData> information) {
         this.information = information;
     }
 

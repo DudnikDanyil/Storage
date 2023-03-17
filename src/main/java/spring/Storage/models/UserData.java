@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "User_Data")
-public class User_Data {
+public class UserData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,7 @@ public class User_Data {
     @Column(name = "user_data_id")
     private int userDataId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_data_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Person owner;
 
@@ -26,7 +26,7 @@ public class User_Data {
     @Column(name = "file_type")
     private String typeFile;
 
-    public User_Data() {
+    public UserData() {
 
     }
 

@@ -15,7 +15,7 @@ import spring.Storage.exception.AbsentPersonIdException;
 import spring.Storage.exception.EmailAlreadyExistsException;
 import spring.Storage.exception.InvalidUsernameOrPasswordException;
 import spring.Storage.models.Person;
-import spring.Storage.models.User_Data;
+import spring.Storage.models.UserData;
 import spring.Storage.repositories.PersonRepository;
 
 import javax.servlet.http.Cookie;
@@ -64,9 +64,9 @@ public class PersonService {
                 httpHeaders.setCacheControl("no-cache");
 
                 List<InfoPersonDTO> PersonListInf = getInfoDuringRegistration(person.getId());
-                List<InfoPersonDTO> PersonListInf2 = listFillingInfoPersonDTO(PersonListInf);
+                List<InfoPersonDTO> PersonListInf2 = configService.listFillingInfoPersonDTO(PersonListInf);
 
-                return new ResponseEntity<>(listFillingInfoPersonDTO(PersonListInf2), httpHeaders, HttpStatus.OK);
+                return new ResponseEntity<>(configService.listFillingInfoPersonDTO(PersonListInf2), httpHeaders, HttpStatus.OK);
             } else {
                 throw new InvalidUsernameOrPasswordException("Incorrect username or password!");
             }
@@ -74,14 +74,6 @@ public class PersonService {
         throw new InvalidUsernameOrPasswordException("Empty username and password!");
     }
 
-    public List<InfoPersonDTO> listFillingInfoPersonDTO(List<InfoPersonDTO> PersonListInf) {
-        List<InfoPersonDTO> PersonListInf2 = new ArrayList<>();
-        for (InfoPersonDTO personInf : PersonListInf) {
-            personInf.setData("true");
-            PersonListInf2.add(personInf);
-        }
-        return PersonListInf2;
-    }
     public List<InfoPersonDTO> ExaminationJWTToken(HttpServletRequest request) throws AbsentPersonIdException {
 
         if (request.getCookies() != null) {
@@ -107,7 +99,7 @@ public class PersonService {
                 throw new AbsentPersonIdException("");
             } else {
 
-                return listFillingInfoPersonDTO(InfoPerson);
+                return configService.listFillingInfoPersonDTO(InfoPerson);
             }
         } else {
             InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
@@ -168,14 +160,14 @@ public class PersonService {
 
         Person person = personRepository.findAllById(userId);
 
-        List<User_Data> PersonList = person.getInformation();
+        List<UserData> PersonList = person.getInformation();
 
         if(PersonList.isEmpty()) {
             List<InfoPersonDTO> listInf = new ArrayList<>();
             InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
             listInf.add(infoPersonDTO);
 
-            return listFillingInfoPersonDTO(listInf);
+            return configService.listFillingInfoPersonDTO(listInf);
 
         } else {
             return PersonList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
@@ -191,9 +183,10 @@ public class PersonService {
         return modelMapper.map(person, PersonDTO.class);
     }
 
-    public InfoPersonDTO convertToInfoPersonDTO(User_Data user_data) {
+    public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
         return modelMapper.map(user_data, InfoPersonDTO.class);
     }
+
     public InfoPersonDTO convertToInfoPersonDTO(Person person) {
         return modelMapper.map(person, InfoPersonDTO.class);
     }
