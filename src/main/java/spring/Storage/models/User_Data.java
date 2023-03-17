@@ -11,7 +11,7 @@ public class User_Data {
     private int data_id;
 
     @Column(name = "user_data_id")
-    private int user_data_id;
+    private int userDataId;
 
     @ManyToOne
     @JoinColumn(name = "user_data_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -70,11 +70,11 @@ public class User_Data {
         this.data_id = data_id;
     }
 
-    public int getUser_data_id() {
-        return user_data_id;
+    public int getUserDataId() {
+        return userDataId;
     }
 
-    public void setUser_data_id(int user_data_id) {
-        this.user_data_id = user_data_id;
+    public void setUserDataId(int userDataId) {
+        this.userDataId = userDataId;
     }
 }

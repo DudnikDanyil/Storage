@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
+import spring.Storage.dto.FileStateDTO;
 import spring.Storage.dto.FileUploadDTO;
 import spring.Storage.dto.InfoPersonDTO;
 import spring.Storage.exception.AbsentPersonIdException;
@@ -101,7 +102,7 @@ public class FileService {
                 personToAdd.setNameFile(nameFile);
                 personToAdd.setDateFile(dataFile);
                 personToAdd.setTypeFile(typeFile);
-                personToAdd.setUser_data_id(Integer.parseInt(userId));
+                personToAdd.setUserDataId(Integer.parseInt(userId));
 
                 userDataRepository.save(personToAdd);
 
@@ -156,6 +157,36 @@ public class FileService {
         } catch (Throwable e) {
             throw new FileUploadException("File upload error");
         }
+    }
+
+    @Transactional
+    public FileStateDTO deletingFileService(HttpServletRequest request) throws AbsentPersonIdException, FileUploadException {
+
+        FileStateDTO result = new FileStateDTO();
+
+        if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies();
+
+            String userId = configService.decodingJWTToken(cookies);
+
+            Person person = personRepository.findAllById(Integer.parseInt(userId));
+
+            File file = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile"));
+
+
+            if (file.exists()) {
+                if (file.delete()) {
+
+                    userDataRepository.deleteByUserDataIdAndNameFile(Integer.parseInt(userId), request.getParameter("nameFile"));
+
+                    result.setFileIsDeleted(true);
+                    return result;
+                }
+                throw new FileUploadException("The file does not exist!");
+            }
+            throw new FileUploadException("An error occurred while deleting a file!");
+        }
+        throw new FileUploadException("No cookies!");
     }
 }
 
