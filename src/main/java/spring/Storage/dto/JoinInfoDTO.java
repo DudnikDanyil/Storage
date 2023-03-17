@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class JoinInfoDTO {
 
-//    private Cookie[] cookie;
     private String email;
     private String password;
     private String nameFile;
@@ -13,22 +12,6 @@ public class JoinInfoDTO {
     private String typeFile;
     private MultipartFile[] fileFile;
 
-//    public Cookie getCookie() {
-//        return cookie;
-//    }
-//
-//    public void setCookie(Cookie cookie) {
-//        this.cookie = cookie;
-//    }
-
-
-//    public Cookie[] getCookie() {
-//        return cookie;
-//    }
-//
-//    public void setCookie(Cookie[] cookie) {
-//        this.cookie = cookie;
-//    }
 
     public String getEmail() {
         return email;

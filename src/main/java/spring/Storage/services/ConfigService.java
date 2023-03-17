@@ -28,7 +28,6 @@ public class ConfigService {
         this.modelMapper = modelMapper;
     }
 
-
     public InfoPersonDTO convertToInfoPersonDTO(User_Data user_data) {
         return modelMapper.map(user_data, InfoPersonDTO.class);
     }
@@ -40,7 +39,6 @@ public class ConfigService {
 
         return inf;
     }
-
 
     public String decodingJWTToken(Cookie[] cookies) throws AbsentPersonIdException {
 

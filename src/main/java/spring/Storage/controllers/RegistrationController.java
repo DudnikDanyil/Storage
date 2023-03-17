@@ -26,9 +26,7 @@ public class RegistrationController extends HttpServlet {
     private final PersonRepository personRepository;
     private final ModelMapper modelMapper;
 
-
     private final ApplicationExceptionHandler applicationExceptionHandler;
-
 
     @Autowired
     public RegistrationController(PersonService personService,
@@ -49,7 +47,6 @@ public class RegistrationController extends HttpServlet {
         String token = personService.createPerson(personDTO);
         httpHeaders.add("Set-Cookie", "token=" + token);
         httpHeaders.setCacheControl("no-cache");
-
 
         return new ResponseEntity<>(myObject, httpHeaders, HttpStatus.OK);
     }

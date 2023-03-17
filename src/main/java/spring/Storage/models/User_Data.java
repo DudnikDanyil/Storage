@@ -10,10 +10,7 @@ public class User_Data {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int data_id;
 
-
-//    @ManyToOne
-//    @JoinColumn(name = "user_data_id", nullable = false)
-   @Column(name = "user_data_id")
+    @Column(name = "user_data_id")
     private int user_data_id;
 
     @ManyToOne
@@ -72,14 +69,6 @@ public class User_Data {
     public void setData_id(int data_id) {
         this.data_id = data_id;
     }
-
-//    public int getUserDataId() {
-//        return userDataId;
-//    }
-//
-//    public void setUserDataId(int userDataId) {
-//        this.userDataId = userDataId;
-//    }
 
     public int getUser_data_id() {
         return user_data_id;

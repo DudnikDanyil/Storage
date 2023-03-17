@@ -95,39 +95,6 @@ public class PersonService {
         return configService.generatingPathObjectWithDataFalse(infoPersonDTO);
     }
 
-//    public String decodingJWTToken(Cookie[] cookies) throws AbsentPersonIdException {
-//
-//                    String UserIdCookie = "";
-//
-//            for (Cookie c : cookies) {
-//
-//                UserIdCookie = c.getValue();
-//            }
-//
-//            System.out.println(UserIdCookie);
-//
-//            DecodedJWT decodedJWT;
-//
-//            Algorithm algorithm = Algorithm.HMAC256("ACB");
-//            JWTVerifier verifier = JWT.require(algorithm)
-//                    .build();
-//            decodedJWT = verifier.verify(UserIdCookie);
-//
-//            Claim claim = decodedJWT.getClaim("userId");
-//            String userId = claim.asString();
-//
-//            System.out.println(userId);
-//
-//            return userId;
-//    }
-
-//    public List<InfoPersonDTO> generatingPathObjectWithDataFalse(InfoPersonDTO infoPersonDTO) {
-//        infoPersonDTO.setData("false");
-//        List<InfoPersonDTO> inf = new ArrayList<>();
-//        inf.add(infoPersonDTO);
-//
-//        return inf;
-//    }
 
     public List<InfoPersonDTO> getInfoPersonWithToken(String userId) throws AbsentPersonIdException {
 
@@ -149,7 +116,6 @@ public class PersonService {
     }
 
 
-    // Регистрируем пользователя и возвращаем в ответ его id
     @Transactional
     public String createPerson(PersonDTO personDTO) throws EmailAlreadyExistsException {
         Person personToAdd = convertToPerson(personDTO);
@@ -210,8 +176,6 @@ public class PersonService {
             listInf.add(infoPersonDTO);
 
             return listFillingInfoPersonDTO(listInf);
-
-//            throw new AbsentPersonIdException("");
 
         } else {
             return PersonList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());

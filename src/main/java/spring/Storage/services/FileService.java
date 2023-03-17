@@ -3,8 +3,14 @@ package spring.Storage.services;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import spring.Storage.dto.FileUploadDTO;
 import spring.Storage.dto.InfoPersonDTO;
@@ -17,18 +23,17 @@ import spring.Storage.repositories.UserDataRepository;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileService {
     private final PersonRepository personRepository;
-    private final PersonService personService;
 
     private final UserDataRepository userDataRepository;
-    private final ModelMapper modelMapper;
 
     private final ConfigService configService;
 
@@ -37,21 +42,19 @@ public class FileService {
 
 
     @Autowired
-    public FileService(PersonRepository personRepository, PersonService personService,
-                       UserDataRepository userDataRepository, ModelMapper modelMapper, ConfigService configService) {
+    public FileService(PersonRepository personRepository,
+                       UserDataRepository userDataRepository,
+                       ConfigService configService) {
         this.personRepository = personRepository;
-        this.personService = personService;
         this.userDataRepository = userDataRepository;
-        this.modelMapper = modelMapper;
         this.configService = configService;
     }
 
     // Возврат информации по клиенту в виде JSON по названию получаемого файла
     @Transactional
     public List<InfoPersonDTO> getInformationAndSaveFiles(HttpServletRequest request,
-                                                        /*  MultipartFile[] fileFile , */
                                                           FileUploadDTO fileUploadDTO) throws FileUploadException,
-                                                                                    AbsentPersonIdException {
+            AbsentPersonIdException {
 
         if (request.getCookies() != null) {
 
@@ -61,9 +64,7 @@ public class FileService {
 
             String userId = configService.decodingJWTToken(cookies);
 
-
             try {
-                //               for (PersonDTO personDTO1 : personDTO) {
                 for (MultipartFile file : fileUploadDTO.getFileFile()) {
                     String resultFileName = file.getOriginalFilename();
 
@@ -82,9 +83,7 @@ public class FileService {
                     }
                     file.transferTo(new File(uploadDir + "/" + resultFileName));
 
-
                 }
-
 
             } catch (Throwable e) {
                 throw new FileUploadException("Error while uploading files!");
@@ -104,14 +103,11 @@ public class FileService {
                 personToAdd.setTypeFile(typeFile);
                 personToAdd.setUser_data_id(Integer.parseInt(userId));
 
-
                 userDataRepository.save(personToAdd);
 
+                InfoPersonDTO personInf = configService.convertToInfoPersonDTO(personToAdd);
 
-                                InfoPersonDTO personInf = configService.convertToInfoPersonDTO(personToAdd);
-
-                                PersonInfo.add(personInf);
-
+                PersonInfo.add(personInf);
 
             }
             return PersonInfo;
@@ -120,9 +116,48 @@ public class FileService {
             InfoPersonDTO infoPersonDTO1 = new InfoPersonDTO();
             return configService.generatingPathObjectWithDataFalse(infoPersonDTO1);
         }
+    }
 
 
+
+
+    @Transactional
+    public ResponseEntity<byte[]> downloadFileService(HttpServletRequest request) throws AbsentPersonIdException, IOException, FileUploadException {
+
+        try {
+
+            if (request.getCookies() != null) {
+                Cookie[] cookies = request.getCookies();
+
+                String userId = configService.decodingJWTToken(cookies);
+
+                Person person = personRepository.findAllById(Integer.parseInt(userId));
+
+//            String filePath = "G:/Project/Spring/Joint project/Project_2/Storage-back_2_1/src/main/resources/img/123456@123456/Шаблон.txt";
+                String filePath = uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile");
+                File file = new File(filePath);
+
+//                User_Data fileInfo = userDataRepository.findByUser_data_idAndNameFile(request.getParameter("nameFile"));
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                headers.setContentDispositionFormData("attachment", "filename=" + file.getName());
+                headers.setContentLength(file.length());
+
+                Resource resource = new PathResource(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile"));
+
+                byte[] data = StreamUtils.copyToByteArray(resource.getInputStream());
+
+                return new ResponseEntity<>(data, headers, HttpStatus.OK);
+            }
+
+            throw new FileUploadException("No cookies!");
+
+        } catch (Throwable e) {
+            throw new FileUploadException("File upload error");
+        }
     }
 }
+
 
 
