@@ -1,0 +1,21 @@
+.register-view input{
+    display: block;
+  }
+  .register-view__password-input{
+      position: relative;
+  }
+  .password-input__switch
+  {
+      all:unset;
+      display: inline-block;
+      position: absolute;
+      right: 10px;
+      top:50%;
+      transform: translate(0%,-50%);
+      user-select: none;
+      cursor: pointer;
+      width: 25px;
+      height: 25px;
+  }
+
+  

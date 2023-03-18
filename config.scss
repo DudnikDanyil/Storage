@@ -1,0 +1,35 @@
+// scss variables to css variables
+// $vars: (
+//   b: red,
+//   g: blue
+// );
+// :root {
+//   @each $property, $value in $vars {
+//     --#{$property}: #{$value};
+//   }
+// }
+
+// ##########################
+// #        MIXINS          #
+// ##########################
+
+@mixin var($property, $value)
+{
+  #{$property} : var(--#{$value})
+}
+
+// ##########################
+// #        FUNCTIONS       #
+// ########################## 
+
+// PX to REM
+@function rem($value)
+{
+  @return $value / 16 + rem;
+}
+
+// PX to EM
+@function em($value)
+{
+  @return $value / 16 + em;
+}
