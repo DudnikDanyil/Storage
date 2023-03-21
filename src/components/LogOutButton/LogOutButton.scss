@@ -1,0 +1,16 @@
+@import '../../../config.scss';
+
+$vars: (
+    clr--plhl : white,
+    accent--clr--plhl:#fff,
+    fw--plhl : 500,
+    fs--plhl : 0.75rem,
+    ff--plhl : 'Roboto',
+    brd--radius : 30px,
+    clr--caret:#ACACAC,
+);
+:root {
+  @each $property, $value in $vars {
+    --#{$property}: #{$value};
+  }
+}
