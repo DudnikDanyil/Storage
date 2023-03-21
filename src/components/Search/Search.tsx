@@ -1,19 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Search.scss';
+import Icon from '../../../public/Search_icon.svg';
 
-type val = {
-  nameFile: string
-}[]
 
-let Search = () =>{
+type Val = {nameFile: string}[]
+
+
+
+export default function Search () {
+
     const [InputValue,setInputValue] = useState('')
-    const [value, setData] = useState<val>([]);
-   
+    const [value, setData] = useState<Val>([])
+    const [isActive,setIsActive] = useState(false)
+    let refBtn = useRef(null)
 
-    function getInputData(event:any): string {
-            setInputValue(event.target.value.trim())
-            return InputValue
+   function getInputData(event: React.ChangeEvent<HTMLInputElement>): void {
+            setInputValue(event.target.value)   
+          
         }
+
+
+  
+    useEffect(() => {
+      if(InputValue)
+    {
+      setIsActive(true)
+    }
+    else{
+      setIsActive(false)
+    }
+    refBtn.current.addEventListener('click', () => {
+      setIsActive(false)
+      refBtn.current.classList.remove('header__search-reset--show')
+    })
+  }, [InputValue]);
+
+ 
+ 
 
         useEffect(() => {
             if(InputValue !== '')
@@ -27,41 +50,23 @@ let Search = () =>{
             }
             fetchData();
           }}, [InputValue]);
-//    async function setInputData(value:string):Promise<any> {
-//         if(InputValue !== '')
-//            {
-//            let res = await fetch(`/api/search?value=${value}`)    
-//             if (res.ok) {
-//                 const data = await res.json();
-//                 useEffect(() => {
-                  
-//                   }, [data]);
-//                 // let str:string = ''
-//                 // data.map(item =>{
-//                 //     str+=`<div className="header__search-item">${item.name}</div>`
-//                 //     document.querySelector('.header__search-container').innerHTML = str
-//                 // })
-//             }
-//            }
-        // }
-        // setInputData(InputValue)
 
-    
-            
+
+          
 
   return (
-    <div className="_wrap">
         <div className="header__search">
-            <label className = "header__search-label" htmlFor="search">Search</label>
-            <input type="search" className = "header__search-input" id="search" onChange={getInputData}/>
-            <div className="header__search-container">
-            {value.map(item => (
-                      <div key={item.nameFile} className="header__search-item">{item.nameFile}</div>
-                    ))}
-            </div>
+        <form role="search" autoComplete='off'>
+              <img src={Icon} className='search-icon__item' alt="Іконка пошуку" />
+              <input type="text" 
+                          placeholder = "Пошук докуметів та файлів"
+                          className = "header__search-input" 
+                          id="search" 
+                          onChange={getInputData}
+                          />
+            <button ref={refBtn} className={`header__search-reset ${isActive ? 'header__search-reset--show' : ''}`} type='reset'></button>
+          </form>
         </div>
-    </div>
   );
 }
 
-export default Search;

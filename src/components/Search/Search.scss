@@ -1,52 +1,92 @@
-._wrap{
-display: grid;
-place-items: center;
-margin: 20px 0 0 0;
+@import '../../../config.scss';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+
+$vars: (
+    clr--plhl : white,
+    accent--clr--plhl:#fff,
+    fw--plhl : 500,
+    fs--plhl : 0.75rem,
+    ff--plhl : 'Roboto',
+    brd--radius : 30px,
+    clr--caret:#ACACAC,
+);
+:root {
+  @each $property, $value in $vars {
+    --#{$property}: #{$value};
+  }
 }
+
 .header__search{
-    width: clamp(200px, 50%, 400px);
-    display: flex;
+    width: clamp(0px, 50%, 28.5rem);
     position: relative;
 }
-.header__search-wrap{
-    display: flex;
-}
+
 .header__search-input
 {
     width: 100%;
-    border: 1px solid blue;
-    border-top-left-radius:0px;
-    border-bottom-left-radius:0px;
-    border-bottom-right-radius:4px;
-    border-top-right-radius:4px;
-    padding: 0 5px;
+    border:2px solid #ACACAC;
+    padding: 0.875rem 1.875rem 0.875rem 3.76rem;
+    @include var(border-radius, brd--radius);
+    @include var(font-family, ff--plhl);
+    @include var(font-weight, fw--plhl);
+    @include var(font-size, fs--plhl);
+    @include var(color, accent--clr--plhl);
+    background-color: #1E2024;
+    @include var(caret-color, clr--caret);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.header__search-label
-{
-    border: 1px solid blue;
-    padding: 5px;
-    border-top-left-radius:4px;
-    border-bottom-left-radius:4px;
-    background-color: aliceblue;
+
+
+  .header__search-input:focus
+  {
+    box-shadow: inset 0 0 7px 1px rgb(255,255,255,0.5);
+    outline: none;
+  }
+  
+.search-icon__item{
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translate(0,-50%);
+    padding: 1px 0 0 0;
 }
-.header__search-container
+.header__search-reset
 {
     position: absolute;
-    top: 0;
+    right: 10px;
+    top: 50%;
+    transform: translate(0,-50%);
+    background-color: transparent;
+    border: 0;
+    width: 20px;
+    height: 20px;
+    visibility: hidden;
+}
+.header__search-reset--show
+{
+    visibility: visible;
+}
+.header__search-reset::after{
+    content: '';
+    position: absolute;
+    top: 50%;
     left: 0;
-    background-color: rgba($color: #000000, $alpha: .1);
-    width: 100%;
-    border-bottom-right-radius:4px;
-    border-bottom-left-radius:4px;
-     z-index: -1;
-    min-height: 30px;
+    width: 14px;
+    height: 2px;
+    background-color: #fff;
+    transform: translate(0,-50%) rotate(-45deg);
 }
-.header__search-item
-{
-    margin: 10px 0 0 0;
-    padding: 5px;
+.header__search-reset::before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 14px;
+    height: 2px;
+    background-color: #fff;
+    transform: translate(0,-50%) rotate(45deg);
 }
-.header__search-item:first-child
-{
-    margin: 30px 0 0 0;
-}
+
+
