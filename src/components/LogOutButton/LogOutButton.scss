@@ -14,9 +14,6 @@ $vars: (
   --brd--rad:70px;
   --brd--size:2px;
 }
-body{
-  background-color: #1E2024;
-}
 .header__logout-button{
   @include var(font-family, ff);
   @include var(font-weight, fw);
@@ -26,7 +23,7 @@ body{
   background-color: transparent;
   border: var(--brd--size) solid var(--clr--brd);
   display: inline-flex;
-  padding: 11px 26px;
+  padding: 0.68725rem 1.625rem;
   line-height: 1.25rem;
 overflow: hidden;
 position: relative;
