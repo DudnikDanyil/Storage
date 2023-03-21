@@ -15,8 +15,7 @@ export default function Search () {
     let refBtn = useRef(null)
 
    function getInputData(event: React.ChangeEvent<HTMLInputElement>): void {
-            setInputValue(event.target.value)   
-          
+            setInputValue(event.target.value)         
         }
 
 
