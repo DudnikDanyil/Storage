@@ -35,7 +35,7 @@ export default function LogOutButton()
         refBtn.current.appendChild(ripple);
         setTimeout(()=>{
             ripple ? ripple.remove() : null
-        },1010)
+        },510)
     }
  
     return(

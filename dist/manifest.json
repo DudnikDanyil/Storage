@@ -1,0 +1,13 @@
+{
+  "main.css": "/static/css/main.css",
+  "main.js": "/static/js/main.js",
+  "static/media/Search_icon.svg": "/static/media/Search_icon.965348a89af1115c4d59e87493c7188e.svg",
+  "static/media/Check_icon.svg": "/static/media/Check_icon.90af2fb170349073d8bac82ea62fcef8.svg",
+  "static/media/bucket.svg": "/static/media/bucket.42115de8f42801873d985c94d55a7d90.svg",
+  "static/media/download.svg": "/static/media/download.3424771d2f678890dcd68aba34658877.svg",
+  "static/media/Red-item_icon.svg": "/static/media/Red-item_icon.6bae6285c0b308abb7e20a4638a6f406.svg",
+  "static/media/pan.svg": "/static/media/pan.523e7a26cb6967e09b664af8de81ca23.svg",
+  "static/media/UploadButton_icon.svg": "/static/media/UploadButton_icon.8abddc0d090a98fae2bbf2d3530eef50.svg",
+  "static/media/User_icon.svg": "/static/media/User_icon.e1fd4fed29a95fe3246bac0b3a85e2c2.svg",
+  "index.html": "/index.html"
+}

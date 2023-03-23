@@ -19,7 +19,6 @@ $vars: (
 }
 
 .header__search{
-    width: clamp(0px, 50%, 28.5rem);
     position: relative;
 }
 
@@ -42,7 +41,7 @@ $vars: (
 
   .header__search-input:focus
   {
-    box-shadow: inset 0 0 7px 1px rgb(255,255,255,0.5);
+    box-shadow: inset 0 0 7px 1px rgb(255,255,255,0.4);
     outline: none;
   }
   
