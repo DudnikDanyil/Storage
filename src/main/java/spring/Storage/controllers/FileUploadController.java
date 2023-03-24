@@ -35,10 +35,10 @@ public class FileUploadController {
 
     @PostMapping("/loading")
     @ResponseBody
-    public ResponseEntity<List<InfoPersonDTO>> fileUpload(HttpServletRequest request,
+    public ResponseEntity<List<InfoPersonDTO>> fileUpload(/* HttpServletRequest request, */
                                                           @ModelAttribute FileUploadDTO fileUploadDTO) throws FileUploadException, AbsentPersonIdException {
 
-            return ResponseEntity.ok(fileService.getInformationAndSaveFiles(request, fileUploadDTO));
+            return ResponseEntity.ok(fileService.getInformationAndSaveFiles( /* request, */ fileUploadDTO));
     }
 
 }

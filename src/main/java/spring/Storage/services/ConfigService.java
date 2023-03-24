@@ -40,7 +40,7 @@ public class ConfigService {
         return inf;
     }
 
-    public String decodingJWTToken(Cookie[] cookies) throws AbsentPersonIdException {
+    public String decodingJWTToken(Cookie[] cookies){
 
         String UserIdCookie = "";
 

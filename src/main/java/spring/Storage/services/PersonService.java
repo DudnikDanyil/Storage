@@ -43,7 +43,8 @@ public class PersonService {
     }
 
     // Автризация
-    public ResponseEntity<List<InfoPersonDTO>> findByUserNameAndPassword(PersonDTO personDTO) throws InvalidUsernameOrPasswordException, AbsentPersonIdException {
+    public ResponseEntity<List<InfoPersonDTO>> findByUserNameAndPassword(PersonDTO personDTO) throws InvalidUsernameOrPasswordException,
+                                                                                                        AbsentPersonIdException {
 
         Person personToAdd = convertToPerson(personDTO);
 
@@ -107,7 +108,6 @@ public class PersonService {
         }
     }
 
-
     @Transactional
     public String createPerson(PersonDTO personDTO) throws EmailAlreadyExistsException {
         Person personToAdd = convertToPerson(personDTO);
@@ -156,7 +156,7 @@ public class PersonService {
         return token;
     }
 
-    public List<InfoPersonDTO> getInfoDuringRegistration(int userId) throws AbsentPersonIdException{
+    public List<InfoPersonDTO> getInfoDuringRegistration(int userId){
 
         Person person = personRepository.findAllById(userId);
 
@@ -179,17 +179,11 @@ public class PersonService {
         return modelMapper.map(personDTO, Person.class);
     }
 
-    public PersonDTO convertToPersonDTO(Person person) {
-        return modelMapper.map(person, PersonDTO.class);
-    }
-
     public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
         return modelMapper.map(user_data, InfoPersonDTO.class);
     }
 
-    public InfoPersonDTO convertToInfoPersonDTO(Person person) {
-        return modelMapper.map(person, InfoPersonDTO.class);
-    }
+
 }
 
 

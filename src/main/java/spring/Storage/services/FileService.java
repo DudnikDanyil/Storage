@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import spring.Storage.dto.FileStateDTO;
 import spring.Storage.dto.FileUploadDTO;
 import spring.Storage.dto.InfoPersonDTO;
+import spring.Storage.dto.MyObject;
 import spring.Storage.exception.AbsentPersonIdException;
 import spring.Storage.exception.FileUploadException;
 import spring.Storage.models.Person;
@@ -57,43 +58,21 @@ public class FileService {
 
     // Возврат информации по клиенту в виде JSON по названию получаемого файла
     @Transactional
-    public List<InfoPersonDTO> getInformationAndSaveFiles(HttpServletRequest request,
+    public List<InfoPersonDTO> getInformationAndSaveFiles(/* HttpServletRequest request, */
                                                           FileUploadDTO fileUploadDTO) throws FileUploadException,
-            AbsentPersonIdException {
+                                                                                                AbsentPersonIdException {
 
-        if (request.getCookies() != null) {
+//        if (request.getCookies() != null) {
 
-            Cookie[] cookies = request.getCookies();
+//            Cookie[] cookies = request.getCookies();
 
             List<InfoPersonDTO> PersonInfo = new ArrayList<>();
 
-            String userId = configService.decodingJWTToken(cookies);
+//            String userId = configService.decodingJWTToken(cookies);
 
-            try {
-                for (MultipartFile file : fileUploadDTO.getFileFile()) {
-                    String resultFileName = file.getOriginalFilename();
+        String userId = "339";
 
-                    Person person = personRepository.findAllById(Integer.parseInt(userId));
-
-                    File uploadDir = new File(uploadPath + "/" + person.getEmail());
-
-                    if (!uploadDir.exists()) {
-                        uploadDir.mkdir(); // если директории нет, создать ее
-                    }
-
-                    if (uploadDir.createNewFile()) {
-                        try (FileOutputStream fos = new FileOutputStream(uploadDir)) {
-                            fos.write(file.getBytes());
-                        }
-                    }
-                    file.transferTo(new File(uploadDir + "/" + resultFileName));
-
-                }
-
-            } catch (Throwable e) {
-                throw new FileUploadException("Error while uploading files!");
-            }
-
+            saveFiles(fileUploadDTO, userId);
 
             int i = 0;
 
@@ -117,17 +96,42 @@ public class FileService {
             }
             return PersonInfo;
 
-        } else {
-            InfoPersonDTO infoPersonDTO1 = new InfoPersonDTO();
-            return configService.generatingPathObjectWithDataFalse(infoPersonDTO1);
+//        } else {
+//            InfoPersonDTO infoPersonDTO1 = new InfoPersonDTO();
+//            return configService.generatingPathObjectWithDataFalse(infoPersonDTO1);
+//        }
+    }
+
+    private void saveFiles (FileUploadDTO fileUploadDTO, String userId) throws FileUploadException {
+
+        try {
+            for (MultipartFile file : fileUploadDTO.getFileFile()) {
+                String resultFileName = file.getOriginalFilename();
+
+                Person person = personRepository.findAllById(Integer.parseInt(userId));
+
+                File uploadDir = new File(uploadPath + "/" + person.getEmail());
+
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdir(); // если директории нет, создать ее
+                }
+
+                if (uploadDir.createNewFile()) {
+                    try (FileOutputStream fos = new FileOutputStream(uploadDir)) {
+                        fos.write(file.getBytes());
+                    }
+                }
+                file.transferTo(new File(uploadDir + "/" + resultFileName));
+            }
+
+        } catch (Throwable e) {
+            throw new FileUploadException("Error while uploading files!");
         }
     }
 
 
-
-
     @Transactional
-    public ResponseEntity<byte[]> downloadFileService(HttpServletRequest request) throws AbsentPersonIdException, IOException, FileUploadException {
+    public ResponseEntity<byte[]> downloadFileService(HttpServletRequest request) throws FileUploadException {
 
         try {
 
@@ -138,11 +142,8 @@ public class FileService {
 
                 Person person = personRepository.findAllById(Integer.parseInt(userId));
 
-//            String filePath = "G:/Project/Spring/Joint project/Project_2/Storage-back_2_1/src/main/resources/img/123456@123456/Шаблон.txt";
                 String filePath = uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile");
                 File file = new File(filePath);
-
-//                User_Data fileInfo = userDataRepository.findByUser_data_idAndNameFile(request.getParameter("nameFile"));
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -177,7 +178,6 @@ public class FileService {
 
             File file = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile"));
 
-
             if (file.exists()) {
                 if (file.delete()) {
 
@@ -199,11 +199,14 @@ public class FileService {
         if (request.getCookies() != null) {
             Cookie[] cookies = request.getCookies();
 
-            String userDataId = configService.decodingJWTToken(cookies);
+//            String userDataId = configService.decodingJWTToken(cookies);
+
+            String userDataId = "339";
 
             List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileStartingWith(Integer.parseInt(userDataId),  request.getParameter("nameFile"));
 
-            if(!personList.isEmpty()) {
+
+        if(!personList.isEmpty()) {
                 return personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
             }
             throw new FileUploadException("File matching the search will be rejected");
@@ -212,9 +215,40 @@ public class FileService {
         throw new AbsentPersonIdException("No cookies");
     }
 
-
     public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
         return modelMapper.map(user_data, InfoPersonDTO.class);
+    }
+
+    public List<MyObject> editingFileName(HttpServletRequest request) throws FileUploadException, AbsentPersonIdException {
+
+
+ //       if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies();
+
+//            String userId = configService.decodingJWTToken(cookies);
+
+            String userDataId = "339";
+
+            Person person = personRepository.findAllById(Integer.parseInt(userDataId));
+
+            File oldFile = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("oldNameFile"));
+
+            File newFile = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("newNameFile"));
+
+
+            // Проверяем, удалось ли переименовать файл
+            if (oldFile.renameTo(newFile)) {
+                MyObject myObject = new MyObject();
+                myObject.setData("true");
+
+                List<MyObject> myObjectsList = new ArrayList<>();
+
+                return myObjectsList;
+            } else {
+                throw new FileUploadException("An error occurred while renaming the file!");
+            }
+//        }
+//        throw new AbsentPersonIdException("No cookies");
     }
 }
 

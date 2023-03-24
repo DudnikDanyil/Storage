@@ -28,9 +28,10 @@ public class Person {
     @Column(name = "file_type", table = "User_Data")
     private String typeFile;
 
-    Person() {
+   public Person() {
 
     }
+
 
     public int getId() {
         return id;

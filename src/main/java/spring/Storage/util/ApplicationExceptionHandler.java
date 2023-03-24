@@ -39,11 +39,13 @@ public class ApplicationExceptionHandler {
 
  //   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(FileUploadException.class)
-    public Map<String, String> FileException(FileUploadException ex) {
+    public List<Map<String, String>> FileException(FileUploadException ex) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("errorMassage", ex.getMessage());
         errorMap.put("data", "false");
-        return errorMap;
+        List<Map<String, String>> errorList = new ArrayList<>();
+        errorList.add(errorMap);
+        return errorList;
     }
 
  //   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
