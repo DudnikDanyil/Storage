@@ -3,21 +3,17 @@ import './Search.scss';
 import Icon from '../../../public/Search_icon.svg';
 
 
-type Val = {nameFile: string}[]
-
-
 
 export default function Search () {
 
     const [InputValue,setInputValue] = useState('')
-    const [value, setData] = useState<Val>([])
+    const [value, setData] = useState([])
     const [isActive,setIsActive] = useState(false)
     let refBtn = useRef(null)
 
-   function getInputData(event: React.ChangeEvent<HTMLInputElement>): void {
+   function getInputData(event){
             setInputValue(event.target.value)         
         }
-
 
   
     useEffect(() => {

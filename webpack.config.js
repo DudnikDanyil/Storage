@@ -13,7 +13,7 @@ let MODE = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 let config = {
     mode:MODE,
     entry: {
-      main: './src/index.tsx',
+      main: './src/index.jsx',
     },
     output: {
       path: path.resolve(__dirname, './dist'),
@@ -72,7 +72,8 @@ let config = {
       ]  
       },
       resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        // extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx'],
       },
     plugins: [new HtmlWebpackPlugin({
       minify: MODE === "production",

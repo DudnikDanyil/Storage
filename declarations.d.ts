@@ -1,3 +1,3 @@
-declare module '*.svg'
-declare module '*.jpg'
-declare module '*.tsx'
+// declare module '*.svg'
+// declare module '*.jpg'
+// declare module '*.tsx'
