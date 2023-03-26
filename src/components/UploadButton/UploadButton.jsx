@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import './UploadButton.scss'
 import UploadIcon from '../../../public/UploadButton_icon.svg'
 
+
 let tab = [0]
 
 export default function UploadButton({setMyState})
@@ -31,21 +32,10 @@ export default function UploadButton({setMyState})
               method: 'POST',
               body: data,
             })
-            // let json = await res.json()
-            let json =[{
-                nameFile:'123',
-                data:'true'
-            },
-            {
-                nameFile:'134',
-                data:'true'
-            },
-            {
-                nameFile:'1',
-                data:'true'
-            },
-            ]
+            let json = await res.json()
+        
 
+      
             let dataContains = json.map(item => item.data)
             if(dataContains[0]==='true')
             {

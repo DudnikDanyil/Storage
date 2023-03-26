@@ -8,8 +8,6 @@ import Icon from '../../../public/Check_icon.svg'
 
 let Home = () =>{
   const [json, setJson] = useState([]);
-
-
   return (
    <div className="wrapper">
     <header className='header'>
@@ -19,7 +17,7 @@ let Home = () =>{
           <img src={Icon} className = "cloud" alt="" />
           </div>
           <div className="header__column">
-          <Search/>
+          <Search setJson={setJson}/>
           </div>
           <div className="header__column">
           <LogOutButton/>

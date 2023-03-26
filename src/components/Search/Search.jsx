@@ -4,18 +4,17 @@ import Icon from '../../../public/Search_icon.svg';
 
 
 
-export default function Search () {
+export default function Search ({setJson}) {
 
     const [InputValue,setInputValue] = useState('')
-    const [value, setData] = useState([])
     const [isActive,setIsActive] = useState(false)
     let refBtn = useRef(null)
 
    function getInputData(event){
+   
             setInputValue(event.target.value)         
         }
 
-  
     useEffect(() => {
       if(InputValue)
     {
@@ -24,10 +23,23 @@ export default function Search () {
     else{
       setIsActive(false)
     }
-    refBtn.current.addEventListener('click', () => {
+    async function handle() {
       setIsActive(false)
-      refBtn.current.classList.remove('header__search-reset--show')
-    })
+      refBtn.current.classList.remove('header__search-reset--show')       
+      const response = await fetch(`/api/search?nameFile=`);
+      let json = await response.json()
+      let dataContains = json.map(item => item.data)
+      if(dataContains[0]==='true')
+      {
+      setJson(prev => prev = json)
+      }
+    }
+    refBtn.current.addEventListener('click',handle)
+         
+        return () => {
+          refBtn.current.removeEventListener('click',handle)
+        };
+
   }, [InputValue]);
 
  
@@ -39,19 +51,39 @@ export default function Search () {
             const fetchData = async () => {
               const response = await fetch(`/api/search?nameFile=${InputValue}`);
               if (response.ok) {
-                const result = await response.json();
-                setData(result);
+                const json = await response.json();
+                let dataContains = json.map(item => item.data)
+                if(dataContains[0]==='true')
+                {
+                setJson(prev => prev = json)
+                }
               }
             }
             fetchData();
-          }}, [InputValue]);
+
+            }
+            else{
+              const fetchData = async () => {
+                const response = await fetch(`/api/search?nameFile=${InputValue}`);
+                if (response.ok) {
+                  const json = await response.json();
+                  let dataContains = json.map(item => item.data)
+                  if(dataContains[0]==='true')
+                  {
+                  setJson(prev => prev = json)
+                  }
+                }
+              }
+              fetchData();
+            }
+          }, [InputValue]);
 
 
           
 
   return (
         <div className="header__search">
-        <form role="search" autoComplete='off'>
+        <form role="search" autoComplete='off' onSubmit={(event)=> event.preventDefault()}>
               <img src={Icon} className='search-icon__item' alt="Іконка пошуку" />
               <input type="text" 
                           placeholder = "Пошук докуметів та файлів"

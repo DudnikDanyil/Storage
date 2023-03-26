@@ -17,7 +17,7 @@ export default function Item({Obj,setJson})
  
         function ShowContextMenu(index,ref)
         {
-            if (ref.current && ref.current[index]) 
+            if (ref.current[index]) 
             {
                 const ripple = document.createElement("span");
                 ripple.style.width = 10 + 'px';
@@ -34,10 +34,25 @@ export default function Item({Obj,setJson})
         setContextMenuShow(true)
         }
 
-        function deleteFile() {
-            const newJson = Obj.filter((item, idx) => idx !== selectedItemIndex)
+      async  function deleteFile() {
+            let nameFile = ''
+            // const newJson = Obj.filter((item, idx) => idx !== selectedItemIndex)
+            const newJson = Obj.filter((item, idx) => {
+                if(idx !== selectedItemIndex)
+                {
+                    return item
+                }
+                else
+                {
+                    nameFile = item.nameFile
+                }
+            })
             setContextMenuShow(false)
-            setJson(newJson);  
+            setJson(newJson)
+
+            let res = await fetch(`/deleteFile?nameFile=${nameFile}`, {
+                method: 'DELETE',
+              })
           }
 
         useEffect(()=>{  

@@ -6,9 +6,7 @@ import {WebpackManifestPlugin}  from 'webpack-manifest-plugin'
 import webpack from 'webpack';
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
 let MODE = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-
 
 let config = {
     mode:MODE,
@@ -91,5 +89,4 @@ let config = {
     })
   ],
   };
-
   export default config
