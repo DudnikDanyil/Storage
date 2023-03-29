@@ -21,7 +21,7 @@ public class PersonDTO {
 
     private String dateFile;
 
-    private String typeFile;
+    private String sizeFile;
 
     private MultipartFile[] fileFile;
 
@@ -58,12 +58,12 @@ public class PersonDTO {
         this.dateFile = dateFile;
     }
 
-    public String getTypeFile() {
-        return typeFile;
+    public String getSizeFile() {
+        return sizeFile;
     }
 
-    public void setTypeFile(String typeFile) {
-        this.typeFile = typeFile;
+    public void setSizeFile(String sizeFile) {
+        this.sizeFile = sizeFile;
     }
 
     public MultipartFile[] getFileFile() {

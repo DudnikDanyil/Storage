@@ -11,5 +11,7 @@ import java.util.List;
 
 public interface UserDataRepository extends CrudRepository<UserData, Integer> {
    void deleteByUserDataIdAndNameFile(int userId, String nameFile);
+
+   List<UserData> findByUserDataIdAndAndNameFile(int userId, String nameFile);
    List<UserData> findAllByUserDataIdAndNameFileStartingWith(int userDataId, String nameFile);
 }

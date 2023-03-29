@@ -1,5 +1,7 @@
 package spring.Storage.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +19,19 @@ public class FileDownloadController {
 
     private final FileService fileService;
 
+    private static final Logger logger = LoggerFactory.getLogger(FileDownloadController.class);
+
     @Autowired
     public FileDownloadController(FileService fileService) {
         this.fileService = fileService;
     }
 
-    @GetMapping(value = "/download")
+    @GetMapping(value = "api/file/download")
     @ResponseBody
-    public ResponseEntity<byte[]> downloadFile(HttpServletRequest request) throws AbsentPersonIdException, IOException, FileUploadException {
+    public ResponseEntity<byte[]> downloadFile(HttpServletRequest request) throws FileUploadException {
 
-        return fileService.downloadFileService(request);
-    }
+            return fileService.downloadFileService(request);
+
+        }
 
 }

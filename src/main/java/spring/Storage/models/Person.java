@@ -25,8 +25,8 @@ public class Person {
     @Column(name = "date_of_download_file", table = "User_Data")
     private String dateFile;
 
-    @Column(name = "file_type", table = "User_Data")
-    private String typeFile;
+    @Column(name = "file_size", table = "User_Data")
+    private String sizeFile;
 
    public Person() {
 
@@ -65,12 +65,12 @@ public class Person {
         this.dateFile = dateFile;
     }
 
-    public String getTypeFile() {
-        return typeFile;
+    public String getSizeFile() {
+        return sizeFile;
     }
 
-    public void setTypeFile(String typeFile) {
-        this.typeFile = typeFile;
+    public void setSizeFile(String sizeFile) {
+        this.sizeFile = sizeFile;
     }
 
     public String getNameFile() {

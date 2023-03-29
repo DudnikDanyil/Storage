@@ -10,6 +10,8 @@ import spring.Storage.models.UserData;
 import spring.Storage.repositories.PersonRepository;
 import spring.Storage.repositories.UserDataRepository;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,7 +23,7 @@ import static org.assertj.core.api.Assertions.*;
 public class UserDataRepositoryTest {
 
     private final UserDataRepository userDataRepository;
-    @Autowired
+
     private final PersonRepository personRepository;
 
     @Autowired
@@ -68,8 +70,10 @@ public class UserDataRepositoryTest {
 //        userData.setUserDataId(person.getId());
 //        userDataRepository.save(userData);
 //
-//        Assertions.assertNotEmpty(userDataRepository.findAllByUserDataIdAndNameFileStartingWith(person.getId(), userData.getNameFile()));
-//    }
+//      List<UserData> userDataList = userDataRepository.findAllByUserDataIdAndNameFileStartingWith(person.getId(), userData.getNameFile());
 //
+//        assertThat(userDataList).hasSizeGreaterThan(0);
+//    }
+
 
 }

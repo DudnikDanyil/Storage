@@ -1,6 +1,8 @@
 package spring.Storage.services;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.*;
@@ -42,6 +44,7 @@ public class FileService {
 
     private final ModelMapper modelMapper;
 
+
     @Value("${upload.path}") // ловим наш файл и записываем в переменную
     private String uploadPath;
 
@@ -72,29 +75,53 @@ public class FileService {
 
         String userId = "339";
 
-            saveFiles(fileUploadDTO, userId);
+        saveFiles(fileUploadDTO, userId);
 
             int i = 0;
 
             for (String nameFile : fileUploadDTO.getNameFile()) {
                 String dataFile = fileUploadDTO.getDateFile()[i];
-                String typeFile = fileUploadDTO.getTypeFile()[i];
+                String sizeFile = fileUploadDTO.getSizeFile()[i];
 
+               float megabytes = (float) Integer.parseInt(sizeFile) / 1024.0f;
+
+                String sizeFailModified = "";
+
+                if (megabytes < 1){
+                    sizeFailModified = ">1";
+                } else {
+
+                        sizeFailModified = String.valueOf((int) megabytes);
+
+                    }
+
+
+
+                System.out.println(megabytes);
                 UserData personToAdd = new UserData();
 
                 personToAdd.setNameFile(nameFile);
                 personToAdd.setDateFile(dataFile);
-                personToAdd.setTypeFile(typeFile);
+                personToAdd.setSizeFile(sizeFailModified);
                 personToAdd.setUserDataId(Integer.parseInt(userId));
+
+                if( userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userId), nameFile).isEmpty()) {
+
 
                 userDataRepository.save(personToAdd);
 
-                InfoPersonDTO personInf = configService.convertToInfoPersonDTO(personToAdd);
+                    InfoPersonDTO personInf = configService.convertToInfoPersonDTO(personToAdd);
 
-                PersonInfo.add(personInf);
+                    PersonInfo.add(personInf);
+                }else {
+                    throw new FileUploadException("A file with this name already exists!");
+                }
 
             }
-            return PersonInfo;
+
+            List<InfoPersonDTO> PersonInfoList = configService.listFillingInfoPersonDTO(PersonInfo);
+
+            return PersonInfoList;
 
 //        } else {
 //            InfoPersonDTO infoPersonDTO1 = new InfoPersonDTO();
@@ -105,40 +132,48 @@ public class FileService {
     private void saveFiles (FileUploadDTO fileUploadDTO, String userId) throws FileUploadException {
 
         try {
-            for (MultipartFile file : fileUploadDTO.getFileFile()) {
-                String resultFileName = file.getOriginalFilename();
+                for (MultipartFile file : fileUploadDTO.getFileFile()) {
+                    String resultFileName = file.getOriginalFilename();
+                    String lowercaseFileName = resultFileName.toLowerCase();
 
-                Person person = personRepository.findAllById(Integer.parseInt(userId));
+                    Person person = personRepository.findAllById(Integer.parseInt(userId));
 
-                File uploadDir = new File(uploadPath + "/" + person.getEmail());
+                    File uploadDir = new File(uploadPath + "/" + person.getEmail());
 
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir(); // если директории нет, создать ее
-                }
-
-                if (uploadDir.createNewFile()) {
-                    try (FileOutputStream fos = new FileOutputStream(uploadDir)) {
-                        fos.write(file.getBytes());
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdir(); // если директории нет, создать ее
                     }
+
+
+//                    if (uploadDir.createNewFile()) {
+//                        try (FileOutputStream fos = new FileOutputStream(uploadDir)) {
+//                            fos.write(file.getBytes());
+//                        }
+//                    }
+//                    file.transferTo(new File(uploadDir + "/" + resultFileName));
+                    File resultFile = new File(uploadDir, lowercaseFileName);
+                    if (resultFile.exists()) {
+                        throw new FileUploadException("Файл с именем " + lowercaseFileName + " уже существует");
+                    }
+
+                    file.transferTo(resultFile);
                 }
-                file.transferTo(new File(uploadDir + "/" + resultFileName));
+            } catch(Throwable e){
+                throw new FileUploadException("Error while uploading files!");
             }
-
-        } catch (Throwable e) {
-            throw new FileUploadException("Error while uploading files!");
-        }
     }
-
 
     @Transactional
     public ResponseEntity<byte[]> downloadFileService(HttpServletRequest request) throws FileUploadException {
 
         try {
 
-            if (request.getCookies() != null) {
+//            if (request.getCookies() != null) {
                 Cookie[] cookies = request.getCookies();
 
-                String userId = configService.decodingJWTToken(cookies);
+//                String userId = configService.decodingJWTToken(cookies);
+
+            String userId = "339";
 
                 Person person = personRepository.findAllById(Integer.parseInt(userId));
 
@@ -155,9 +190,9 @@ public class FileService {
                 byte[] data = StreamUtils.copyToByteArray(resource.getInputStream());
 
                 return new ResponseEntity<>(data, headers, HttpStatus.OK);
-            }
+ //           }
 
-            throw new FileUploadException("No cookies!");
+//            throw new FileUploadException("No cookies!");
 
         } catch (Throwable e) {
             throw new FileUploadException("File upload error");
@@ -169,10 +204,12 @@ public class FileService {
 
         FileStateDTO result = new FileStateDTO();
 
-        if (request.getCookies() != null) {
+ //       if (request.getCookies() != null) {
             Cookie[] cookies = request.getCookies();
 
-            String userId = configService.decodingJWTToken(cookies);
+//            String userId = configService.decodingJWTToken(cookies);
+
+            String userId = "339";
 
             Person person = personRepository.findAllById(Integer.parseInt(userId));
 
@@ -189,14 +226,14 @@ public class FileService {
                 throw new FileUploadException("The file does not exist!");
             }
             throw new FileUploadException("An error occurred while deleting a file!");
-        }
-        throw new FileUploadException("No cookies!");
+//        }
+ //       throw new FileUploadException("No cookies!");
     }
 
     @Transactional
     public List<InfoPersonDTO> searchFileService(HttpServletRequest request) throws AbsentPersonIdException, FileUploadException {
 
-        if (request.getCookies() != null) {
+//        if (request.getCookies() != null) {
             Cookie[] cookies = request.getCookies();
 
 //            String userDataId = configService.decodingJWTToken(cookies);
@@ -207,12 +244,14 @@ public class FileService {
 
 
         if(!personList.isEmpty()) {
-                return personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
+            List<InfoPersonDTO> personListInfo = personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
+           return configService.listFillingInfoPersonDTO(personListInfo);
             }
             throw new FileUploadException("File matching the search will be rejected");
-            }
+ //           }
 
-        throw new AbsentPersonIdException("No cookies");
+
+//        throw new AbsentPersonIdException("No cookies");
     }
 
     public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
@@ -238,6 +277,14 @@ public class FileService {
 
             // Проверяем, удалось ли переименовать файл
             if (oldFile.renameTo(newFile)) {
+
+                List<UserData> userDataList= userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userDataId), request.getParameter("oldNameFile"));
+
+                for (UserData userData : userDataList){
+                    userData.setNameFile(request.getParameter("newNameFile"));
+                    userDataRepository.save(userData);
+                }
+
                 MyObject myObject = new MyObject();
                 myObject.setData("true");
 

@@ -23,8 +23,8 @@ public class UserData {
     @Column(name = "date_of_download_file")
     private String dateFile;
 
-    @Column(name = "file_type")
-    private String typeFile;
+    @Column(name = "file_size")
+    private String sizeFile;
 
     public UserData() {
 
@@ -46,12 +46,12 @@ public class UserData {
         this.dateFile = dateFile;
     }
 
-    public String getTypeFile() {
-        return typeFile;
+    public String getSizeFile() {
+        return sizeFile;
     }
 
-    public void setTypeFile(String typeFile) {
-        this.typeFile = typeFile;
+    public void setSizeFile(String sizeFile) {
+        this.sizeFile = sizeFile;
     }
 
     public Person getOwner() {

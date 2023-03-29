@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.util.unit.DataSize;
 
 import javax.servlet.MultipartConfigElement;
@@ -25,8 +26,8 @@ public class Project3Application {
 	@Bean
 	MultipartConfigElement multipartConfigElement() {
 		MultipartConfigFactory factory = new MultipartConfigFactory();
-		factory.setMaxFileSize(DataSize.parse("128KB"));
-		factory.setMaxRequestSize(DataSize.parse("128KB"));
+		factory.setMaxFileSize(DataSize.parse("12800KB"));
+		factory.setMaxRequestSize(DataSize.parse("12800KB"));
 		return factory.createMultipartConfig();
 	}
 
