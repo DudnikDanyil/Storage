@@ -78,13 +78,16 @@ public class FileService {
         saveFiles(fileUploadDTO, userId);
 
             int i = 0;
+            int j = 0;
 
             for (String nameFile : fileUploadDTO.getNameFile()) {
-                String dataFile = fileUploadDTO.getDateFile()[i];
-                String sizeFile = fileUploadDTO.getSizeFile()[i];
+                String dataFile = fileUploadDTO.getDateFile()[i++];
+                String sizeFile = fileUploadDTO.getSizeFile()[j++];
 
-//               float megabytes = (float) Integer.parseInt(sizeFile) / 1024.0f;
-                float megabytes = (float) Integer.parseInt(sizeFile) / 1024.0f / 1024.0f;
+
+                float megabytes = (float) Integer.parseInt(sizeFile) / 1024 / 1024;
+//                double megabytes = (double) Integer.parseInt(sizeFile) / 1024.0 / 1024.0;
+
 
                 String sizeFailModified = "";
 
