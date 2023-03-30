@@ -83,7 +83,8 @@ public class FileService {
                 String dataFile = fileUploadDTO.getDateFile()[i];
                 String sizeFile = fileUploadDTO.getSizeFile()[i];
 
-               float megabytes = (float) Integer.parseInt(sizeFile) / 1024.0f;
+//               float megabytes = (float) Integer.parseInt(sizeFile) / 1024.0f;
+                float megabytes = (float) Integer.parseInt(sizeFile) / 1024.0f / 1024.0f;
 
                 String sizeFailModified = "";
 
