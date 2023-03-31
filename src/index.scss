@@ -16,10 +16,12 @@ cursor: pointer;
 body,html{
   background-color: #F4F7FD;
   height: 100vh;
+ 
 }
 .wrapper{
     overflow: hidden;
     height: 100vh;
+    // outline: 2px solid red;
 }
 @media (prefers-color-scheme: dark) {
     body{

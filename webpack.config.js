@@ -18,6 +18,7 @@ let config = {
       filename: 'static/js/[name].js',
       clean:true
     }, 
+    devtool:'eval',
     // stats: 'none',
     devServer: {
      open: true,

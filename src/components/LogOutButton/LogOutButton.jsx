@@ -1,4 +1,4 @@
-import React, { createElement, useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import './LogOutButton.scss'
 import IconUser from "../../../public/User_icon.svg"
 
@@ -19,7 +19,7 @@ export default function LogOutButton()
         })
     },[])
  
-    function createObj()
+        function createObj()
     {
         const ripple = document.createElement("span");
         ripple.style.width = 10 + 'px';
@@ -32,7 +32,9 @@ export default function LogOutButton()
             ripple ? ripple.remove() : null
         },510)
     }
+
  
+
     return(
         <div className="header__logout">
            <button type="button" ref={refBtn} aria-label="Кнопка виходу з профілю" onClick={createObj} className="header__logout-button">

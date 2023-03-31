@@ -12,7 +12,7 @@ export default function Search ({setJson}) {
 
    function getInputData(event){
    
-            setInputValue(event.target.value)         
+            setInputValue(event.target.value.toLowerCase())         
         }
 
     useEffect(() => {
@@ -26,13 +26,16 @@ export default function Search ({setJson}) {
     async function handle() {
       setIsActive(false)
       refBtn.current.classList.remove('header__search-reset--show')       
-      const response = await fetch(`/api/search?nameFile=`);
+      const response = await fetch('api/search?nameFile=');
       let json = await response.json()
-      let dataContains = json.map(item => item.data)
-      if(dataContains[0]==='true')
-      {
-      setJson(prev => prev = json)
-      }
+      json.map(item => {
+        if(item.data == 'true')
+        {
+          json.map(item => item.nameFile = item.nameFile.charAt(0).toUpperCase() + item.nameFile.slice(1).toLowerCase());
+          setJson(json)
+        }
+      })
+      
     }
     refBtn.current.addEventListener('click',handle)
          
@@ -52,11 +55,18 @@ export default function Search ({setJson}) {
               const response = await fetch(`/api/search?nameFile=${InputValue}`);
               if (response.ok) {
                 const json = await response.json();
-                let dataContains = json.map(item => item.data)
-                if(dataContains[0]==='true')
-                {
-                setJson(prev => prev = json)
-                }
+                let dataContains = json.map(item => item.data)       
+                dataContains.map(item => {
+                  if(item == 'true')
+                  {
+                  json.map(item => item.nameFile = item.nameFile.charAt(0).toUpperCase() + item.nameFile.slice(1).toLowerCase());
+                  setJson(prev => prev = json)
+                  }
+                  else
+                  {
+                    setJson([])
+                  }
+                })
               }
             }
             fetchData();
@@ -68,10 +78,18 @@ export default function Search ({setJson}) {
                 if (response.ok) {
                   const json = await response.json();
                   let dataContains = json.map(item => item.data)
-                  if(dataContains[0]==='true')
-                  {
-                  setJson(prev => prev = json)
-                  }
+         
+                  dataContains.map(item => {
+                    if(item == 'true')
+                    {
+                      json.map(item => item.nameFile = item.nameFile.charAt(0).toUpperCase() + item.nameFile.slice(1).toLowerCase());
+                    setJson(prev => prev = json)
+                    }
+                    else
+                    {
+                      setJson([])
+                    }
+                  })
                 }
               }
               fetchData();

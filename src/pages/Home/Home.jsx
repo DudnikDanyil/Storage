@@ -3,18 +3,24 @@ import Search from '../../components/Search/Search'
 import LogOutButton from '../../components/LogOutButton/LogOutButton'
 import UploadButton from '../../components/UploadButton/UploadButton'
 import Item from '../../components/Item/Item'
+import CheckCloudIconcon from '../../../public/CheckCloudIcon.svg'
+import DownloadCloudIcon from '../../../public/DownloadCloudIcon.svg'
+import ErrorCloudIcon from '../../../public/ErrorCloudIcon.svg'
+import UploadCloudIcon from '../../../public/UploadCloudIcon.svg'
 import './Home.scss'
-import Icon from '../../../public/Check_icon.svg'
+
+ let StateIconArray = [CheckCloudIconcon,DownloadCloudIcon,ErrorCloudIcon,UploadCloudIcon]
 
 let Home = () =>{
-  const [json, setJson] = useState([]);
+  const [json, setJson] = useState([])
+  const [IconState,setIconState] = useState(StateIconArray[0])
   return (
    <div className="wrapper">
     <header className='header'>
         <div className="header__row">
           <div className="header__column">
-          <UploadButton setMyState={setJson}/>
-          <img src={Icon} className = "cloud" alt="" />
+          <UploadButton setJson={setJson} setIconState={setIconState} StateIconArray={StateIconArray}/>
+          <img src={IconState} className = "cloud" alt="" />
           </div>
           <div className="header__column">
           <Search setJson={setJson}/>
@@ -28,7 +34,7 @@ let Home = () =>{
         <section className='filters'>
         </section>
         <section className='items'>     
-           <Item Obj={json} setJson={setJson}/> 
+           <Item Obj={json} setJson={setJson} setIconState={setIconState} StateIconArray={StateIconArray}/> 
         </section>
       </main>
     </div>

@@ -4,17 +4,23 @@
     display: grid;
     padding: 0 15px;
     grid-template-columns:repeat(auto-fit, 150px);
-    gap:30px;
+    row-gap:43px;
+    column-gap:53px;
     margin-top: 50px; 
+    height: 80vh;
+ 
+    position: relative;
 }
 .container-item{
-aspect-ratio: 1/1;
 border: 2px solid rgba(24,25,28,0.2);
 border-radius: 10px;
 background-color: #fff;
 display: flex;
 flex-direction: column;
 position: relative;
+align-items: center;
+height: 150px;
+z-index: 100;
 }
 .container-item__setting {
     margin: 10px 10px 0 0;
@@ -58,12 +64,23 @@ position: relative;
 }
 .container-item__icon{
 padding: 3.5px 6px;
-background-color: rgba(255,58,58,0.1);
 display: inline-flex;
 margin: 0 auto;
 border-radius: 4px;
 margin-bottom: 15px;
 margin-top: -10px;
+}
+.container-item__icon--red
+{
+    background-color: rgba(255,58,58,0.1);
+}
+.container-item__icon--orange
+{
+    background-color: rgba(255,166,84,0.1);
+}
+.container-item__icon--blue
+{
+    background-color: rgba(84,137,255,0.1);
 }
 .container-item__icon-item{
 width: 36px;
@@ -73,16 +90,22 @@ height: 41px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    width: 120px;
 }
 .container-item__title{
 font-family: 'Roboto';
-font-weight: 600;
+font-weight: 500;
 font-size: 14px;
 color: #3C4A66;
-margin-bottom: 6px;
-padding: 0 10px;
-text-align: center;
+margin-bottom: 8px;
 letter-spacing: 1px;
+width: 100%;
+text-align: center;
+overflow-x: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+cursor:default;
 }
 .container-item__size{
 font-family: 'Roboto';
@@ -124,9 +147,37 @@ visibility: hidden;
 .context-menu__item:not(:last-child){
 border-bottom:1px solid #282B30;
 }
-
-
-
+.container__content{
+    font-family: 'Roboto';
+    font-style: normal;
+    color: #FFFFFF;
+    opacity: 0.2;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.container__content-image
+{
+    width: 46px;
+    height: 46px;
+    margin-bottom: 10px;
+}
+.container__content-title
+{
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+.container__content-subtitle
+{
+    font-size: 14px;
+    text-align: center;
+}
 @media(max-width:721px)
 {
     .container{

@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import './UploadButton.scss'
 import UploadIcon from '../../../public/UploadButton_icon.svg'
 
-
 let tab = [0]
 
-export default function UploadButton({setMyState})
+export default function UploadButton({setJson,setIconState,StateIconArray})
 {
+
     function SubmitFile()
     {
         const file = document.querySelector('.upload-button__input')
@@ -16,9 +16,13 @@ export default function UploadButton({setMyState})
         const month = LiveDate.getMonth()
         const year = LiveDate.getFullYear()
         let arr = [...file.files]
+        let regEx = /\.+[^.]*$/;
+
         arr.map(item =>{
-            data.append('nameFile', item.name);
-            data.append('typeFile', item.type);
+            let type = item.name.match(regEx)
+            data.append('nameFile', item.name.toLowerCase());
+            data.append('sizeFile', item.size);
+            data.append('typeFile', type);
             data.append('dateFile', `${year}-${month + 1}-${date}`);
             data.append('fileFile', item);
         })
@@ -28,32 +32,41 @@ export default function UploadButton({setMyState})
     async  function sentFile(data)
      {
         if (Array.from(data.entries()).length != 0) {
+            setIconState(StateIconArray[1])
             let res = await fetch('/loading', {
               method: 'POST',
               body: data,
             })
+            try{
+            setIconState(StateIconArray[0])
             let json = await res.json()
-        
-
-      
+            //  let json = [{nameFile:'123.txt',data:'true',typeFile:".txt"}]
+            json.map(item => item.nameFile = item.nameFile.charAt(0).toUpperCase() + item.nameFile.slice(1).toLowerCase());
             let dataContains = json.map(item => item.data)
-            if(dataContains[0]==='true')
-            {
-            json.map(val => {
-                setMyState(prevItems => {
-                
+            dataContains.map(item => {
+                if(item == 'true')
+                {      
+                    json.map(val => {
+                        setJson(prevItems => {
+                        
                             if (prevItems.some(item => item.nameFile === val.nameFile)) 
-                            {
-                                return prevItems;
-                            } 
+                                {
+                                     return prevItems;
+                                } 
                             else 
-                            {
-                                return [...prevItems, val];
-                            }
+                                {
+                                     return [...prevItems, val];
+                                }
                         })
-                  })
-                }
-      }
+                     })
+                }        
+            })
+         }
+         catch(e){
+            setIconState(StateIconArray[2])
+        }
+        }
+    
     }
     return(
         <div className="header__upload-button upload-button"> 
@@ -65,3 +78,6 @@ export default function UploadButton({setMyState})
         </div>
     )
 }
+
+
+
