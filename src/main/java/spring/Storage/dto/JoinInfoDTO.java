@@ -10,6 +10,8 @@ public class JoinInfoDTO {
     private String nameFile;
     private String dateFile;
     private String sizeFile;
+
+    private String typeFile;
     private MultipartFile[] fileFile;
 
 
@@ -51,6 +53,14 @@ public class JoinInfoDTO {
 
     public void setSizeFile(String sizeFile) {
         this.sizeFile = sizeFile;
+    }
+
+    public String getTypeFile() {
+        return typeFile;
+    }
+
+    public void setTypeFile(String typeFile) {
+        this.typeFile = typeFile;
     }
 
     public MultipartFile[] getFileFile() {

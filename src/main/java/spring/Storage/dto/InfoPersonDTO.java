@@ -10,6 +10,8 @@ public class InfoPersonDTO {
 
     private String sizeFile;
 
+    private String typeFile;
+
     private String data = "";
 
 
@@ -36,6 +38,14 @@ public class InfoPersonDTO {
 
     public void setSizeFile(String sizeFile) {
         this.sizeFile = sizeFile;
+    }
+
+    public String getTypeFile() {
+        return typeFile;
+    }
+
+    public void setTypeFile(String typeFile) {
+        this.typeFile = typeFile;
     }
 
     public String getData() {

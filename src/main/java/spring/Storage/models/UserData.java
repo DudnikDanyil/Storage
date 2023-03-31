@@ -26,6 +26,9 @@ public class UserData {
     @Column(name = "file_size")
     private String sizeFile;
 
+    @Column(name = "type_file")
+    private String typeFile;
+
     public UserData() {
 
     }
@@ -76,5 +79,13 @@ public class UserData {
 
     public void setUserDataId(int userDataId) {
         this.userDataId = userDataId;
+    }
+
+    public String getTypeFile() {
+        return typeFile;
+    }
+
+    public void setTypeFile(String typeFile) {
+        this.typeFile = typeFile;
     }
 }

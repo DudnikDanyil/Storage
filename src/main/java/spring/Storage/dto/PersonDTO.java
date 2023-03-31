@@ -23,6 +23,8 @@ public class PersonDTO {
 
     private String sizeFile;
 
+    private String typeFile;
+
     private MultipartFile[] fileFile;
 
 
@@ -64,6 +66,14 @@ public class PersonDTO {
 
     public void setSizeFile(String sizeFile) {
         this.sizeFile = sizeFile;
+    }
+
+    public String getTypeFile() {
+        return typeFile;
+    }
+
+    public void setTypeFile(String typeFile) {
+        this.typeFile = typeFile;
     }
 
     public MultipartFile[] getFileFile() {

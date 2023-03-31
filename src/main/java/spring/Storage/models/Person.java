@@ -28,6 +28,9 @@ public class Person {
     @Column(name = "file_size", table = "User_Data")
     private String sizeFile;
 
+    @Column(name = "type_file", table = "User_Data")
+    private String typeFile;
+
    public Person() {
 
     }
@@ -71,6 +74,14 @@ public class Person {
 
     public void setSizeFile(String sizeFile) {
         this.sizeFile = sizeFile;
+    }
+
+    public String getTypeFile() {
+        return typeFile;
+    }
+
+    public void setTypeFile(String typeFile) {
+        this.typeFile = typeFile;
     }
 
     public String getNameFile() {

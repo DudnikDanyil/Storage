@@ -9,6 +9,8 @@ public class FileUploadDTO {
     private String[] dateFile;
     private String[] sizeFile;
 
+    private String[] typeFile;
+
     private MultipartFile[] fileFile;
 
     public String[] getNameFile() {
@@ -41,6 +43,14 @@ public class FileUploadDTO {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String[] getTypeFile() {
+        return typeFile;
+    }
+
+    public void setTypeFile(String[] typeFile) {
+        this.typeFile = typeFile;
     }
 
     public MultipartFile[] getFileFile() {
