@@ -258,7 +258,7 @@ public class FileService {
 //        throw new AbsentPersonIdException("No cookies");
     }
 
-    public List<MyObject> editingFileName(HttpServletRequest request) throws FileUploadException, AbsentPersonIdException {
+    public List<InfoPersonDTO> editingFileName(HttpServletRequest request) throws FileUploadException, AbsentPersonIdException {
 
 
         //       if (request.getCookies() != null) {
@@ -270,32 +270,57 @@ public class FileService {
 
         Person person = personRepository.findAllById(Integer.parseInt(userDataId));
 
-        File oldFile = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("oldNameFile"));
+        String oldNameFile = request.getParameter("oldNameFile");
 
-        File newFile = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("newNameFile"));
+        UserData UserDataFindByNewNameFile = userDataRepository.findByUserDataIdAndNameFile(Integer.parseInt(userDataId), oldNameFile);
+
+       String newVerifiedNameFile = validationEnteredNameFile(request.getParameter("newNameFile"), UserDataFindByNewNameFile);
 
 
-        // Проверяем, удалось ли переименовать файл
+
+        File oldFile = new File(uploadPath + "/" + person.getEmail() + "/" + oldNameFile);
+
+        File newFile = new File(uploadPath + "/" + person.getEmail() + "/" + newVerifiedNameFile);
+
+
         if (oldFile.renameTo(newFile)) {
 
-            List<UserData> userDataList = userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userDataId), request.getParameter("oldNameFile"));
+            List<UserData> userDataList = userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userDataId), oldNameFile);
 
             for (UserData userData : userDataList) {
-                userData.setNameFile(request.getParameter("newNameFile"));
+                userData.setNameFile(newVerifiedNameFile);
                 userDataRepository.save(userData);
             }
 
-            MyObject myObject = new MyObject();
-            myObject.setData("true");
+            List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileStartingWith(Integer.parseInt(userDataId), newVerifiedNameFile);
 
-            List<MyObject> myObjectsList = new ArrayList<>();
+            List<InfoPersonDTO> personListInfo = personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
+            return configService.listFillingInfoPersonDTO(personListInfo);
 
-            return myObjectsList;
         } else {
             throw new FileUploadException("An error occurred while renaming the file!");
         }
 //        }
 //        throw new AbsentPersonIdException("No cookies");
+    }
+    
+    private String validationEnteredNameFile(String newNameFile,
+                                              UserData UserDataFindByNewNameFile){
+
+        int extensionIndex = newNameFile.lastIndexOf(".");
+
+        if (extensionIndex == -1) {
+
+            newNameFile += UserDataFindByNewNameFile.getTypeFile();
+        } else if (extensionIndex == newNameFile.length() - 1) {
+
+            newNameFile = newNameFile.substring(0, extensionIndex) + UserDataFindByNewNameFile.getTypeFile();
+        } else {
+
+            newNameFile = newNameFile.substring(0, extensionIndex) + UserDataFindByNewNameFile.getTypeFile();
+        }
+
+        return newNameFile;
     }
 
     public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {

@@ -41,7 +41,7 @@ public class FileController {
 
     @PutMapping(value = "/editing")
     @ResponseBody
-    public List<MyObject> editingFile(HttpServletRequest request) throws FileUploadException, AbsentPersonIdException {
+    public List<InfoPersonDTO> editingFile(HttpServletRequest request) throws FileUploadException, AbsentPersonIdException {
 
         return fileService.editingFileName(request);
     }
