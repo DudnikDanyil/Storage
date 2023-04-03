@@ -42,7 +42,7 @@ public class PersonService {
         this.configService = configService;
     }
 
-    // Автризация
+
     public ResponseEntity<List<InfoPersonDTO>> findByUserNameAndPassword(PersonDTO personDTO) throws InvalidUsernameOrPasswordException,
                                                                                                         AbsentPersonIdException {
 
@@ -75,7 +75,7 @@ public class PersonService {
         throw new InvalidUsernameOrPasswordException("Empty username and password!");
     }
 
-    public List<InfoPersonDTO> ExaminationJWTToken(HttpServletRequest request) throws AbsentPersonIdException {
+    public List<InfoPersonDTO> examinationJWTToken(HttpServletRequest request) throws AbsentPersonIdException {
 
         if (request.getCookies() != null) {
 
@@ -89,7 +89,7 @@ public class PersonService {
     }
 
 
-    public List<InfoPersonDTO> getInfoPersonWithToken(String userId) throws AbsentPersonIdException {
+    private List<InfoPersonDTO> getInfoPersonWithToken(String userId) throws AbsentPersonIdException {
 
         if (!personRepository.findPersonById(Integer.parseInt(userId)).isEmpty()) {
 
@@ -103,6 +103,7 @@ public class PersonService {
                 return configService.listFillingInfoPersonDTO(InfoPerson);
             }
         } else {
+
             InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
             return configService.generatingPathObjectWithDataFalse(infoPersonDTO);
         }
@@ -129,7 +130,7 @@ public class PersonService {
 
     }
 
-    public String passwordEncryptionMD5(String password){
+    private String passwordEncryptionMD5(String password){
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());
@@ -156,7 +157,7 @@ public class PersonService {
         return token;
     }
 
-    public List<InfoPersonDTO> getInfoDuringRegistration(int userId){
+    private List<InfoPersonDTO> getInfoDuringRegistration(int userId){
 
         Person person = personRepository.findAllById(userId);
 
@@ -174,12 +175,12 @@ public class PersonService {
         }
     }
 
-    // Методы для конвертации
-    public Person convertToPerson(PersonDTO personDTO) {
+
+    private Person convertToPerson(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
 
-    public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
+    private InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
         return modelMapper.map(user_data, InfoPersonDTO.class);
     }
 

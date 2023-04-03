@@ -45,7 +45,7 @@ public class AuthorizationController {
     @GetMapping("/authentic")
     public List<InfoPersonDTO> authCookie(HttpServletRequest request) throws AbsentPersonIdException {
         System.out.println(request);
-            return personService.ExaminationJWTToken(request);
+            return personService.examinationJWTToken(request);
 
     }
 }

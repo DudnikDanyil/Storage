@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.Storage.dto.InfoPersonDTO;
-import spring.Storage.exception.AbsentPersonIdException;
 import spring.Storage.models.UserData;
 
 import javax.servlet.http.Cookie;

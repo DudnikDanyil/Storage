@@ -1,8 +1,6 @@
 package spring.Storage.services;
 
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.*;
@@ -17,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import spring.Storage.dto.FileStateDTO;
 import spring.Storage.dto.FileUploadDTO;
 import spring.Storage.dto.InfoPersonDTO;
-import spring.Storage.dto.MyObject;
 import spring.Storage.exception.AbsentPersonIdException;
 import spring.Storage.exception.FileUploadException;
 import spring.Storage.models.Person;
@@ -148,13 +145,6 @@ public class FileService {
                     uploadDir.mkdir(); // если директории нет, создать ее
                 }
 
-
-//                    if (uploadDir.createNewFile()) {
-//                        try (FileOutputStream fos = new FileOutputStream(uploadDir)) {
-//                            fos.write(file.getBytes());
-//                        }
-//                    }
-//                    file.transferTo(new File(uploadDir + "/" + resultFileName));
                 File resultFile = new File(uploadDir, lowercaseFileName);
                 if (resultFile.exists()) {
                     throw new FileUploadException("Файл с именем " + lowercaseFileName + " уже существует");
@@ -274,8 +264,7 @@ public class FileService {
 
         UserData UserDataFindByNewNameFile = userDataRepository.findByUserDataIdAndNameFile(Integer.parseInt(userDataId), oldNameFile);
 
-       String newVerifiedNameFile = validationEnteredNameFile(request.getParameter("newNameFile"), UserDataFindByNewNameFile);
-
+        String newVerifiedNameFile = validationEditingNameFile(request.getParameter("newNameFile"), UserDataFindByNewNameFile);
 
 
         File oldFile = new File(uploadPath + "/" + person.getEmail() + "/" + oldNameFile);
@@ -292,10 +281,12 @@ public class FileService {
                 userDataRepository.save(userData);
             }
 
-            List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileStartingWith(Integer.parseInt(userDataId), newVerifiedNameFile);
 
-            List<InfoPersonDTO> personListInfo = personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
-            return configService.listFillingInfoPersonDTO(personListInfo);
+            Person personAfterChange = personRepository.findAllById(Integer.parseInt(userDataId));
+
+            List<InfoPersonDTO> listUserDataAfterChange = personAfterChange.getInformation().stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
+
+            return configService.listFillingInfoPersonDTO(listUserDataAfterChange);
 
         } else {
             throw new FileUploadException("An error occurred while renaming the file!");
@@ -303,21 +294,18 @@ public class FileService {
 //        }
 //        throw new AbsentPersonIdException("No cookies");
     }
-    
-    private String validationEnteredNameFile(String newNameFile,
-                                              UserData UserDataFindByNewNameFile){
 
-        int extensionIndex = newNameFile.lastIndexOf(".");
 
-        if (extensionIndex == -1) {
+    private String validationEditingNameFile(String newNameFile, UserData UserDataFindByNewNameFile) {
 
-            newNameFile += UserDataFindByNewNameFile.getTypeFile();
-        } else if (extensionIndex == newNameFile.length() - 1) {
+        String fileTypeFromDB = UserDataFindByNewNameFile.getTypeFile();
 
-            newNameFile = newNameFile.substring(0, extensionIndex) + UserDataFindByNewNameFile.getTypeFile();
+        int firstDotIndex = newNameFile.indexOf('.');
+        if (firstDotIndex == -1) {
+            newNameFile += fileTypeFromDB;
         } else {
 
-            newNameFile = newNameFile.substring(0, extensionIndex) + UserDataFindByNewNameFile.getTypeFile();
+            newNameFile = newNameFile.substring(0, firstDotIndex) + fileTypeFromDB;
         }
 
         return newNameFile;
