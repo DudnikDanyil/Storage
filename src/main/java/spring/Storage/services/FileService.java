@@ -234,7 +234,7 @@ public class FileService {
 
         String userDataId = "339";
 
-        List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileStartingWith(Integer.parseInt(userDataId), request.getParameter("nameFile"));
+      List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileContaining(Integer.parseInt(userDataId), request.getParameter("nameFile"));
 
 
         if (!personList.isEmpty()) {

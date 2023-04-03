@@ -14,5 +14,5 @@ public interface UserDataRepository extends CrudRepository<UserData, Integer> {
 
    List<UserData> findByUserDataIdAndAndNameFile(int userId, String nameFile);
    UserData findByUserDataIdAndNameFile(int userId, String oldNameFile);
-   List<UserData> findAllByUserDataIdAndNameFileStartingWith(int userDataId, String nameFile);
+   List<UserData> findAllByUserDataIdAndNameFileContaining(int userDataId, String nameFile);
 }
