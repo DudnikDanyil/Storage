@@ -27,9 +27,6 @@ public class ConfigService {
         this.modelMapper = modelMapper;
     }
 
-    public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
-        return modelMapper.map(user_data, InfoPersonDTO.class);
-    }
 
     public List<InfoPersonDTO> generatingPathObjectWithDataFalse(InfoPersonDTO infoPersonDTO) {
         infoPersonDTO.setData("false");
@@ -39,7 +36,7 @@ public class ConfigService {
         return inf;
     }
 
-    public String decodingJWTToken(Cookie[] cookies){
+    public String decodingJWTToken(Cookie[] cookies) {
 
         String UserIdCookie = "";
 
@@ -66,13 +63,19 @@ public class ConfigService {
     }
 
     public List<InfoPersonDTO> listFillingInfoPersonDTO(List<InfoPersonDTO> PersonListInf) {
+
         List<InfoPersonDTO> PersonListInf2 = new ArrayList<>();
         for (InfoPersonDTO personInf : PersonListInf) {
             personInf.setData("true");
             PersonListInf2.add(personInf);
         }
+
         return PersonListInf2;
     }
 
+    public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
+
+        return modelMapper.map(user_data, InfoPersonDTO.class);
+    }
 
 }
