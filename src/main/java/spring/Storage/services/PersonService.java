@@ -44,73 +44,93 @@ public class PersonService {
 
 
     public ResponseEntity<List<InfoPersonDTO>> findByUserNameAndPassword(PersonDTO personDTO) throws InvalidUsernameOrPasswordException,
-                                                                                                        AbsentPersonIdException {
+            AbsentPersonIdException {
+        try {
 
-        Person personToAdd = convertToPerson(personDTO);
+            Person personToAdd = convertToPerson(personDTO);
 
-        String password = personToAdd.getPassword();
-        String password2 = passwordEncryptionMD5(password);
-        String email = personToAdd.getEmail();
+            String password = personToAdd.getPassword();
+            String password2 = passwordEncryptionMD5(password);
+            String email = personToAdd.getEmail();
 
-        if (email != "" && password != "") {
+            if (email != "" && password != "") {
 
-            if (personRepository.findByEmailAndPassword(email, password2).isPresent()) {
+                if (personRepository.findByEmailAndPassword(email, password2).isPresent()) {
 
-                Person person = personRepository.findAllByEmail(email);
+                    Person person = personRepository.findAllByEmail(email);
 
-                String token = createJWTToken(personToAdd);
+                    String token = createJWTToken(personToAdd);
 
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.add("Set-Cookie", "token=" + token);
-                httpHeaders.setCacheControl("no-cache");
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.add("Set-Cookie", "token=" + token);
+                    httpHeaders.setCacheControl("no-cache");
 
-                List<InfoPersonDTO> PersonListInf = getInfoDuringRegistration(person.getId());
-                List<InfoPersonDTO> PersonListInf2 = configService.listFillingInfoPersonDTO(PersonListInf);
+                    List<InfoPersonDTO> PersonListInf = getInfoDuringRegistration(person.getId());
+                    List<InfoPersonDTO> PersonListInf2 = configService.listFillingInfoPersonDTO(PersonListInf);
 
-                return new ResponseEntity<>(configService.listFillingInfoPersonDTO(PersonListInf2), httpHeaders, HttpStatus.OK);
-            } else {
-                throw new InvalidUsernameOrPasswordException("Incorrect username or password!");
+                    return new ResponseEntity<>(configService.listFillingInfoPersonDTO(PersonListInf2), httpHeaders, HttpStatus.OK);
+                } else {
+                    throw new InvalidUsernameOrPasswordException("Incorrect username or password!");
+                }
             }
+            throw new InvalidUsernameOrPasswordException("Empty username and password!");
+
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while processing the request.", e);
         }
-        throw new InvalidUsernameOrPasswordException("Empty username and password!");
     }
 
     public List<InfoPersonDTO> examinationJWTToken(HttpServletRequest request) throws AbsentPersonIdException {
 
-        if (request.getCookies() != null) {
+        try {
 
-            Cookie[] cookies = request.getCookies();
+            if (request.getCookies() != null) {
 
-            return getInfoPersonWithToken(configService.decodingJWTToken(cookies));
+                Cookie[] cookies = request.getCookies();
+
+                return getInfoPersonWithToken(configService.decodingJWTToken(cookies));
+            }
+
+            InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
+            return configService.generatingPathObjectWithDataFalse(infoPersonDTO);
+
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while processing the request.", e);
         }
-
-        InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
-        return configService.generatingPathObjectWithDataFalse(infoPersonDTO);
     }
 
 
     private List<InfoPersonDTO> getInfoPersonWithToken(String userId) throws AbsentPersonIdException {
 
-        if (!personRepository.findPersonById(Integer.parseInt(userId)).isEmpty()) {
+            try {
 
-            List<InfoPersonDTO> InfoPerson = getInfoDuringRegistration(Integer.parseInt(userId));
+            if (!personRepository.findPersonById(Integer.parseInt(userId)).isEmpty()) {
 
-            if (InfoPerson.isEmpty()) {
+                List<InfoPersonDTO> InfoPerson = getInfoDuringRegistration(Integer.parseInt(userId));
 
-                throw new AbsentPersonIdException("");
+                if (InfoPerson.isEmpty()) {
+
+                    throw new AbsentPersonIdException("");
+                } else {
+
+                    return configService.listFillingInfoPersonDTO(InfoPerson);
+                }
             } else {
 
-                return configService.listFillingInfoPersonDTO(InfoPerson);
+                InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
+                return configService.generatingPathObjectWithDataFalse(infoPersonDTO);
             }
-        } else {
 
-            InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
-            return configService.generatingPathObjectWithDataFalse(infoPersonDTO);
-        }
+        } catch (Exception e) {
+                throw new RuntimeException("An error occurred while processing the request.", e);
+            }
     }
 
     @Transactional
     public String createPerson(PersonDTO personDTO) throws EmailAlreadyExistsException {
+
+        try{
+
         Person personToAdd = convertToPerson(personDTO);
 
         String password = personToAdd.getPassword();
@@ -127,10 +147,12 @@ public class PersonService {
         } else {
             throw new EmailAlreadyExistsException("This user already exists! Please login.");
         }
-
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while processing the request.", e);
+        }
     }
 
-    private String passwordEncryptionMD5(String password){
+    private String passwordEncryptionMD5(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());
@@ -139,13 +161,15 @@ public class PersonService {
                     .printHexBinary(digest).toUpperCase();
 
             return myHash;
-        } catch (Throwable e){
-            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while processing the request.", e);
         }
     }
 
     @Transactional
     public String createJWTToken(Person personToAdd) {
+
+        try{
 
         Person person = personRepository.findPersonByEmail(personToAdd.getEmail());
 
@@ -155,15 +179,21 @@ public class PersonService {
                 .sign(algorithm);
 
         return token;
+
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while processing the request.", e);
+        }
     }
 
-    private List<InfoPersonDTO> getInfoDuringRegistration(int userId){
+    private List<InfoPersonDTO> getInfoDuringRegistration(int userId) {
+
+        try{
 
         Person person = personRepository.findAllById(userId);
 
         List<UserData> PersonList = person.getInformation();
 
-        if(PersonList.isEmpty()) {
+        if (PersonList.isEmpty()) {
             List<InfoPersonDTO> listInf = new ArrayList<>();
             InfoPersonDTO infoPersonDTO = new InfoPersonDTO();
             listInf.add(infoPersonDTO);
@@ -172,6 +202,9 @@ public class PersonService {
 
         } else {
             return PersonList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
+        }
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while processing the request.", e);
         }
     }
 
