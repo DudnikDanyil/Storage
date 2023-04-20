@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class FileController {
 
     public final FileService fileService;
@@ -31,12 +32,11 @@ public class FileController {
         return fileService.deletingFileService(request);
     }
 
-    @GetMapping(value = "api/file/download")
+    @GetMapping(value = "/download")
     @ResponseBody
     public ResponseEntity<byte[]> downloadFile(HttpServletRequest request) throws FileUploadException {
 
         return fileService.downloadFileService(request);
-
     }
 
     @PutMapping(value = "/editing")
@@ -47,7 +47,7 @@ public class FileController {
     }
 
     @ResponseBody
-    @GetMapping("/api/search")
+    @GetMapping("/search")
     public List<InfoPersonDTO> searchFile(HttpServletRequest request) throws AbsentPersonIdException, FileUploadException {
 
         return fileService.searchFileService(request);
@@ -55,9 +55,9 @@ public class FileController {
 
     @PostMapping("/loading")
     @ResponseBody
-    public ResponseEntity<List<InfoPersonDTO>> fileUpload(/* HttpServletRequest request, */
+    public ResponseEntity<List<InfoPersonDTO>> fileUpload( HttpServletRequest request,
             @ModelAttribute FileUploadDTO fileUploadDTO) throws FileUploadException, AbsentPersonIdException {
 
-        return ResponseEntity.ok(fileService.getInformationAndSaveFiles( /* request, */ fileUploadDTO));
+        return ResponseEntity.ok(fileService.getInformationAndSaveFiles(request,  fileUploadDTO));
     }
 }

@@ -2,8 +2,6 @@ package spring.Storage;
 
 import javax.persistence.EntityManager;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,20 +39,31 @@ public class UserDataRepositoryTest {
         this.entityManager = entityManager;
     }
 
-    @Test
-    @Transactional
-    void deleteByUserDataIdAndNameFile_Test() {
+    private Person createPerson() {
         String email = "Test" + (int) Math.round(Math.random() * 500) + "@example.com";
         String password = "Password123";
         Person person = new Person();
         person.setEmail(email);
         person.setPassword(password);
+        return person;
+    }
 
-        personRepository.save(person);
-
+    private UserData createUserData(Person person){
         UserData userData = new UserData();
         userData.setNameFile("test" + (int) Math.round(Math.random() * 500) + ".txt");
         userData.setUserDataId(person.getId());
+        return userData;
+    }
+
+    @Test
+    @Transactional
+    void deleteByUserDataIdAndNameFile_Test() {
+        Person person = createPerson();
+
+        personRepository.save(person);
+
+        UserData userData = createUserData(person);
+
         userDataRepository.save(userData);
 
         // Удаление файла по имени и id пользователя
@@ -65,22 +74,16 @@ public class UserDataRepositoryTest {
         UserData deletedEntity = userDataRepository.findByUserDataIdAndNameFile(userData.getUserDataId(), userData.getNameFile());
         assertNull(deletedEntity);
 
-
     }
 
     @Test
     void findAllByUserDataIdAndNameFileContaining_Test() {
-        String email = "Test" + (int) Math.round(Math.random() * 500) + "@example.com";
-        String password = "Password123";
-        Person person = new Person();
-        person.setEmail(email);
-        person.setPassword(password);
+        Person person = createPerson();
 
         personRepository.save(person);
 
-        UserData userData = new UserData();
-        userData.setNameFile("test" + (int) Math.round(Math.random() * 500) + ".txt");
-        userData.setUserDataId(person.getId());
+        UserData userData = createUserData(person);
+
         userDataRepository.save(userData);
 
         List<UserData> userDataList = userDataRepository.findAllByUserDataIdAndNameFileContaining(person.getId(), userData.getNameFile());

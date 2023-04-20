@@ -16,9 +16,12 @@ import spring.Storage.util.ApplicationExceptionHandler;
 
 import javax.servlet.http.HttpServlet;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
+@RequestMapping("/api")
 public class RegistrationController extends HttpServlet {
 
     private final PersonService personService;
@@ -40,7 +43,7 @@ public class RegistrationController extends HttpServlet {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MyObject> createPerson(@RequestBody @Valid PersonDTO personDTO) throws EmailAlreadyExistsException {
+    public ResponseEntity<List<MyObject>> createPerson(@RequestBody @Valid PersonDTO personDTO) throws EmailAlreadyExistsException {
         MyObject myObject = new MyObject();
         myObject.setData("true");
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -48,7 +51,10 @@ public class RegistrationController extends HttpServlet {
         httpHeaders.add("Set-Cookie", "token=" + token);
         httpHeaders.setCacheControl("no-cache");
 
-        return new ResponseEntity<>(myObject, httpHeaders, HttpStatus.OK);
+        List<MyObject> listMyObject = new ArrayList<>();
+        listMyObject.add(myObject);
+
+        return new ResponseEntity<>(listMyObject, httpHeaders, HttpStatus.OK);
     }
 
 

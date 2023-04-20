@@ -1,22 +1,25 @@
 package spring.Storage.dto;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class PersonDTO {
 
     @NotEmpty(message = "Name must not be empty")
-//    @Size(min=2, max=100, message = "Name must be 2 to 100 characters long")
-//    @Email
+    @Size(min=2, max=100, message = "Name must be 2 to 100 characters long")
+    @Email
     private String email;
 
-//    @NotEmpty(message = "Password must not be empty")
- //   @Size(min=8, max=50, message = "Password must be 8 to 50 characters long")
-    // Настраиваем паттер валидации
-//    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9@#$%]).{8,}", message = "Incorrect password!")
+    @NotEmpty(message = "Password must not be empty")
+    @Size(min=8, max=50, message = "Password must be 8 to 50 characters long")
+    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9@#$%]).{8,}", message = "Incorrect password!")
     private String password;
 
-//    @Size(max=50)
+    @Size(max=50)
     private String nameFile;
 
     private String dateFile;

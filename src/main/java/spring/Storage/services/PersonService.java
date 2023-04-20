@@ -100,7 +100,7 @@ public class PersonService {
     }
 
 
-    private List<InfoPersonDTO> getInfoPersonWithToken(String userId) throws AbsentPersonIdException {
+    private List<InfoPersonDTO> getInfoPersonWithToken(String userId) {
 
             try {
 

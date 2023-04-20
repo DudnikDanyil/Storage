@@ -42,7 +42,7 @@ public class FileService {
     private final ModelMapper modelMapper;
 
 
-    @Value("${upload.path}") // ловим наш файл и записываем в переменную
+    @Value("/home/ubuntu/img")
     private String uploadPath;
 
 
@@ -56,78 +56,76 @@ public class FileService {
         this.modelMapper = modelMapper;
     }
 
-    // Возврат информации по клиенту в виде JSON по названию получаемого файла
     @Transactional
-    public List<InfoPersonDTO> getInformationAndSaveFiles(/* HttpServletRequest request, */
-            FileUploadDTO fileUploadDTO) throws FileUploadException,
+    public List<InfoPersonDTO> getInformationAndSaveFiles(HttpServletRequest request,
+                                                          FileUploadDTO fileUploadDTO) throws FileUploadException,
             AbsentPersonIdException {
 
-//        if (request.getCookies() != null) {
+        if (request.getCookies() != null) {
 
-//            Cookie[] cookies = request.getCookies();
+            Cookie[] cookies = request.getCookies();
 
-        List<InfoPersonDTO> PersonInfo = new ArrayList<>();
+            List<InfoPersonDTO> PersonInfo = new ArrayList<>();
 
-//            String userId = configService.decodingJWTToken(cookies);
-
-        String userId = "339";
-
-        saveFiles(fileUploadDTO, userId);
-
-        int i = 0;
-        int j = 0;
-        int q = 0;
-
-        for (String nameFile : fileUploadDTO.getNameFile()) {
-            String dataFile = fileUploadDTO.getDateFile()[i++];
-            String sizeFile = fileUploadDTO.getSizeFile()[j++];
-            String typeFile = fileUploadDTO.getTypeFile()[q++];
+            String userId = configService.decodingJWTToken(cookies);
 
 
-            float megabytes = (float) Integer.parseInt(sizeFile) / 1024 / 1024;
+            saveFiles(fileUploadDTO, userId);
 
+            int i = 0;
+            int j = 0;
+            int q = 0;
 
-            String sizeFailModified = "";
+            for (String nameFile : fileUploadDTO.getNameFile()) {
+                if (userDataRepository.findByUserDataIdAndNameFile(Integer.parseInt(userId), nameFile) != null) {
+                    throw new FileUploadException("File with this name already exists!");
+                }
 
-            if (megabytes < 1) {
-                sizeFailModified = ">1";
-            } else {
+                String dataFile = fileUploadDTO.getDateFile()[i++];
+                String sizeFile = fileUploadDTO.getSizeFile()[j++];
+                String typeFile = fileUploadDTO.getTypeFile()[q++];
 
-                sizeFailModified = String.valueOf((int) megabytes);
+                float megabytes = (float) Integer.parseInt(sizeFile) / 1024 / 1024;
+
+                String sizeFailModified = "";
+
+                if (megabytes < 1) {
+                    sizeFailModified = ">1";
+                } else {
+
+                    sizeFailModified = String.valueOf((int) megabytes);
+                }
+
+                System.out.println(megabytes);
+                UserData personToAdd = new UserData();
+
+                personToAdd.setNameFile(nameFile);
+                personToAdd.setDateFile(dataFile);
+                personToAdd.setSizeFile(sizeFailModified);
+                personToAdd.setTypeFile(typeFile);
+                personToAdd.setUserDataId(Integer.parseInt(userId));
+
+                if (userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userId), nameFile).isEmpty()) {
+
+                    userDataRepository.save(personToAdd);
+
+                    InfoPersonDTO personInf = configService.convertToInfoPersonDTO(personToAdd);
+
+                    PersonInfo.add(personInf);
+                } else {
+                    throw new FileUploadException("A file with this name already exists!");
+                }
 
             }
 
+            List<InfoPersonDTO> PersonInfoList = configService.listFillingInfoPersonDTO(PersonInfo);
 
-            System.out.println(megabytes);
-            UserData personToAdd = new UserData();
+            return PersonInfoList;
 
-            personToAdd.setNameFile(nameFile);
-            personToAdd.setDateFile(dataFile);
-            personToAdd.setSizeFile(sizeFailModified);
-            personToAdd.setTypeFile(typeFile);
-            personToAdd.setUserDataId(Integer.parseInt(userId));
-
-            if (userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userId), nameFile).isEmpty()) {
-
-                userDataRepository.save(personToAdd);
-
-                InfoPersonDTO personInf = configService.convertToInfoPersonDTO(personToAdd);
-
-                PersonInfo.add(personInf);
-            } else {
-                throw new FileUploadException("A file with this name already exists!");
-            }
-
+        } else {
+            InfoPersonDTO infoPersonDTO1 = new InfoPersonDTO();
+            return configService.generatingPathObjectWithDataFalse(infoPersonDTO1);
         }
-
-        List<InfoPersonDTO> PersonInfoList = configService.listFillingInfoPersonDTO(PersonInfo);
-
-        return PersonInfoList;
-
-//        } else {
-//            InfoPersonDTO infoPersonDTO1 = new InfoPersonDTO();
-//            return configService.generatingPathObjectWithDataFalse(infoPersonDTO1);
-//        }
     }
 
     private void saveFiles(FileUploadDTO fileUploadDTO, String userId) throws FileUploadException {
@@ -142,7 +140,7 @@ public class FileService {
                 File uploadDir = new File(uploadPath + "/" + person.getEmail());
 
                 if (!uploadDir.exists()) {
-                    uploadDir.mkdir(); // если директории нет, создать ее
+                    uploadDir.mkdir();
                 }
 
                 File resultFile = new File(uploadDir, lowercaseFileName);
@@ -151,6 +149,7 @@ public class FileService {
                 }
 
                 file.transferTo(resultFile);
+
             }
         } catch (Throwable e) {
             throw new FileUploadException("Error while uploading files!");
@@ -162,33 +161,30 @@ public class FileService {
 
         try {
 
-//            if (request.getCookies() != null) {
-            Cookie[] cookies = request.getCookies();
+            if (request.getCookies() != null) {
+                Cookie[] cookies = request.getCookies();
 
-//                String userId = configService.decodingJWTToken(cookies);
+                String userId = configService.decodingJWTToken(cookies);
 
-            String userId = "339";
+                Person person = personRepository.findAllById(Integer.parseInt(userId));
 
-            Person person = personRepository.findAllById(Integer.parseInt(userId));
+                String filePath = uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile");
+                File file = new File(filePath);
 
-            String filePath = uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile");
-            File file = new File(filePath);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                headers.setContentDispositionFormData("attachment", "filename=" + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
+                headers.setContentLength(file.length());
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "filename=" + file.getName());
-            headers.setContentLength(file.length());
+                Resource resource = new PathResource(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile"));
 
-            Resource resource = new PathResource(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile"));
+                byte[] data = StreamUtils.copyToByteArray(resource.getInputStream());
 
-            byte[] data = StreamUtils.copyToByteArray(resource.getInputStream());
+                return new ResponseEntity<>(data, headers, HttpStatus.OK);
+            }
 
-            return new ResponseEntity<>(data, headers, HttpStatus.OK);
-            //           }
-
-//            throw new FileUploadException("No cookies!");
-
-        } catch (Throwable e) {
+            throw new FileUploadException("No cookies!");
+        } catch (Exception e) {
             throw new FileUploadException("File upload error");
         }
     }
@@ -198,101 +194,83 @@ public class FileService {
 
         FileStateDTO result = new FileStateDTO();
 
-        //       if (request.getCookies() != null) {
-        Cookie[] cookies = request.getCookies();
+        if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies();
 
-//            String userId = configService.decodingJWTToken(cookies);
+            String userId = configService.decodingJWTToken(cookies);
+            Person person = personRepository.findAllById(Integer.parseInt(userId));
+            File file = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile"));
 
-        String userId = "339";
+            if (file.exists()) {
+                if (file.delete()) {
 
-        Person person = personRepository.findAllById(Integer.parseInt(userId));
+                    userDataRepository.deleteByUserDataIdAndNameFile(Integer.parseInt(userId), request.getParameter("nameFile"));
 
-        File file = new File(uploadPath + "/" + person.getEmail() + "/" + request.getParameter("nameFile"));
-
-        if (file.exists()) {
-            if (file.delete()) {
-
-                userDataRepository.deleteByUserDataIdAndNameFile(Integer.parseInt(userId), request.getParameter("nameFile"));
-
-                result.setFileIsDeleted(true);
-                return result;
+                    result.setFileIsDeleted(true);
+                    return result;
+                }
+                throw new FileUploadException("The file does not exist!");
             }
-            throw new FileUploadException("The file does not exist!");
+            throw new FileUploadException("An error occurred while deleting a file!");
         }
-        throw new FileUploadException("An error occurred while deleting a file!");
-//        }
-        //       throw new FileUploadException("No cookies!");
+        throw new FileUploadException("No cookies!");
     }
 
     @Transactional
     public List<InfoPersonDTO> searchFileService(HttpServletRequest request) throws AbsentPersonIdException, FileUploadException {
 
-//        if (request.getCookies() != null) {
-        Cookie[] cookies = request.getCookies();
+        if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies();
 
-//            String userDataId = configService.decodingJWTToken(cookies);
+            String userDataId = configService.decodingJWTToken(cookies);
 
-        String userDataId = "339";
-
-      List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileContaining(Integer.parseInt(userDataId), request.getParameter("nameFile"));
+            List<UserData> personList = userDataRepository.findAllByUserDataIdAndNameFileContaining(Integer.parseInt(userDataId), request.getParameter("nameFile"));
 
 
-        if (!personList.isEmpty()) {
-            List<InfoPersonDTO> personListInfo = personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
-            return configService.listFillingInfoPersonDTO(personListInfo);
+            if (!personList.isEmpty()) {
+                List<InfoPersonDTO> personListInfo = personList.stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
+                return configService.listFillingInfoPersonDTO(personListInfo);
+            }
+            throw new FileUploadException("File matching the search will be rejected");
         }
-        throw new FileUploadException("File matching the search will be rejected");
-        //           }
 
 
-//        throw new AbsentPersonIdException("No cookies");
+        throw new AbsentPersonIdException("No cookies");
     }
 
     public List<InfoPersonDTO> editingFileName(HttpServletRequest request) throws FileUploadException, AbsentPersonIdException {
 
+        if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies();
 
-        //       if (request.getCookies() != null) {
-        Cookie[] cookies = request.getCookies();
+            String userDataId = configService.decodingJWTToken(cookies);
+            Person person = personRepository.findAllById(Integer.parseInt(userDataId));
+            String oldNameFile = request.getParameter("oldNameFile");
+            UserData UserDataFindByNewNameFile = userDataRepository.findByUserDataIdAndNameFile(Integer.parseInt(userDataId), oldNameFile);
+            String newVerifiedNameFile = validationEditingNameFile(request.getParameter("newNameFile"), UserDataFindByNewNameFile);
 
-//            String userId = configService.decodingJWTToken(cookies);
+            File oldFile = new File(uploadPath + "/" + person.getEmail() + "/" + oldNameFile);
+            File newFile = new File(uploadPath + "/" + person.getEmail() + "/" + newVerifiedNameFile);
 
-        String userDataId = "339";
+            if (oldFile.renameTo(newFile)) {
 
-        Person person = personRepository.findAllById(Integer.parseInt(userDataId));
+                List<UserData> userDataList = userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userDataId), oldNameFile);
 
-        String oldNameFile = request.getParameter("oldNameFile");
+                for (UserData userData : userDataList) {
+                    userData.setNameFile(newVerifiedNameFile);
+                    userDataRepository.save(userData);
+                }
 
-        UserData UserDataFindByNewNameFile = userDataRepository.findByUserDataIdAndNameFile(Integer.parseInt(userDataId), oldNameFile);
+                Person personAfterChange = personRepository.findAllById(Integer.parseInt(userDataId));
+                List<InfoPersonDTO> listUserDataAfterChange = personAfterChange.getInformation().stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
 
-        String newVerifiedNameFile = validationEditingNameFile(request.getParameter("newNameFile"), UserDataFindByNewNameFile);
+                return configService.listFillingInfoPersonDTO(listUserDataAfterChange);
 
-
-        File oldFile = new File(uploadPath + "/" + person.getEmail() + "/" + oldNameFile);
-
-        File newFile = new File(uploadPath + "/" + person.getEmail() + "/" + newVerifiedNameFile);
-
-
-        if (oldFile.renameTo(newFile)) {
-
-            List<UserData> userDataList = userDataRepository.findByUserDataIdAndAndNameFile(Integer.parseInt(userDataId), oldNameFile);
-
-            for (UserData userData : userDataList) {
-                userData.setNameFile(newVerifiedNameFile);
-                userDataRepository.save(userData);
+            } else {
+                throw new FileUploadException("An error occurred while renaming the file!");
             }
-
-
-            Person personAfterChange = personRepository.findAllById(Integer.parseInt(userDataId));
-
-            List<InfoPersonDTO> listUserDataAfterChange = personAfterChange.getInformation().stream().map(this::convertToInfoPersonDTO).collect(Collectors.toList());
-
-            return configService.listFillingInfoPersonDTO(listUserDataAfterChange);
-
-        } else {
-            throw new FileUploadException("An error occurred while renaming the file!");
         }
-//        }
-//        throw new AbsentPersonIdException("No cookies");
+        throw new AbsentPersonIdException("No cookies");
     }
 
 
@@ -311,7 +289,7 @@ public class FileService {
         return newNameFile;
     }
 
-    public InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
+    private InfoPersonDTO convertToInfoPersonDTO(UserData user_data) {
         return modelMapper.map(user_data, InfoPersonDTO.class);
     }
 }
