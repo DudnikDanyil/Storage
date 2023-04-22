@@ -10,3 +10,7 @@ This is a Spring-based RESTful API that enables users to store, upload, download
 
 ## Overview
 Our platform offers users the ability to register and authenticate, after which they can save their files securely on our platform. Users can also use our search functionality to quickly locate the files they need, and even edit the names of their files directly in the storage system.
+
+## API requests
+
+**Registration requests:
