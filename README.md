@@ -22,8 +22,10 @@ Our platform offers users the ability to register and authenticate, after which 
 
 Input parameters as a POST-query:
 <pre>
+{
     email : "****",
     password: "****"
+}
 </pre>
 Return parameters:
 <pre>
@@ -36,7 +38,71 @@ Return parameters:
 And also JWT-token
 
 **Authorization  requests:**
-**- Registration**
+
+**- Authorization**
+<pre>
+    @PostMapping("/api/auth")
+</pre>
+
+Input parameters as a POST-query:
+<pre>
+    email : "****",
+    password: "****"
+</pre>
+Return parameters:
+<pre>
+[
+{
+"nameFile":null,
+"dateFile":null,
+"sizeFile":null,
+"typeFile":null,
+"data":"true"
+}
+]
+</pre>
+If a person has files on the server:
+<pre>
+[
+{
+"nameFile":Test.txt,
+"dateFile":00.00.0000,
+"sizeFile":23,
+"typeFile":.txt,
+"data":"true"
+}
+...
+]
+</pre>
+
+**- Authentication**
+Input parameters as a POST-query:
+JWT-token
+Return parameters:
+<pre>
+[
+{
+"nameFile":null,
+"dateFile":null,
+"sizeFile":null,
+"typeFile":null,
+"data":"true"
+}
+]
+</pre>
+If a person has files on the server:
+<pre>
+[
+{
+"nameFile":Test.txt,
+"dateFile":00.00.0000,
+"sizeFile":23,
+"typeFile":.txt,
+"data":"true"
+}
+...
+]
+</pre>
 
 
 
