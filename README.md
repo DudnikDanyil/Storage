@@ -19,4 +19,9 @@ Our platform offers users the ability to register and authenticate, after which 
     @PostMapping("/api/register")
 </pre>
 
+Input parameters as a POST-query
 
+<pre>
+    email : "****",
+    password: "****"
+</pre>
