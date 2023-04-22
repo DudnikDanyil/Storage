@@ -33,4 +33,16 @@ Return parameters:
 }
 ]
 </pre>
-And also LWT-token
+And also JWT-token
+
+**Authorization  requests:**
+**- Registration**
+
+
+
+
+
+
+
+
+
