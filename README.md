@@ -37,7 +37,7 @@ Return parameters:
 </pre>
 And also JWT-token
 
-**Authorization  requests:**
+**Authorization requests:**
 
 **- Authorization**
 <pre>
@@ -46,8 +46,10 @@ And also JWT-token
 
 Input parameters as a POST-query:
 <pre>
+{
     email : "****",
     password: "****"
+}
 </pre>
 Return parameters:
 <pre>
@@ -108,6 +110,45 @@ If a person has files on the server:
 ...
 ]
 </pre>
+
+**File requests:**
+
+**- Delete**
+<pre>
+    @DeleteMapping("/api/deleteFile")
+</pre>
+Input parameters as a DELETE-query:
+<pre>
+/api/deleteFile?nameFail=****
+</pre>
+Return parameters:
+<pre>
+{
+"fileIsDeleted":true
+}
+</pre>
+
+**- Download**
+<pre>
+    @GetMapping(value = "/api/download")
+</pre>
+Input parameters as a GET-query:
+<pre>
+/api/downloadFile?nameFail=****
+</pre>
+Return parameters:
+
+File download in progress
+
+**- Editing**
+<pre>
+    @PutMapping(value = "/api/editing")
+</pre>
+
+
+
+
+
 
 
 
