@@ -15,9 +15,11 @@ Our platform offers users the ability to register and authenticate, after which 
 
 **Registration requests:**
 
-\```java
-    @PostMapping("/register")
-    public ResponseEntity<List<MyObject>> createPerson(@RequestBody @Valid PersonDTO personDTO){
-    }
-\```
+<pre>
+```java
+public static void main(String[] args) {
+    System.out.println("Hello World!");
+}
+```
+</pre>
 
