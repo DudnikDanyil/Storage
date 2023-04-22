@@ -15,13 +15,22 @@ Our platform offers users the ability to register and authenticate, after which 
 
 **Registration requests:**
 
+**- Registration**
 <pre>
     @PostMapping("/api/register")
 </pre>
 
-Input parameters as a POST-query
-
+Input parameters as a POST-query:
 <pre>
     email : "****",
     password: "****"
 </pre>
+Return parameters:
+<pre>
+[
+{
+"data":"true"
+}
+]
+</pre>
+And also LWT-token
