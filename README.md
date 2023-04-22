@@ -13,4 +13,4 @@ Our platform offers users the ability to register and authenticate, after which 
 
 ## API requests
 
-**Registration requests:
+**Registration requests:**
