@@ -17,9 +17,6 @@ Our platform offers users the ability to register and authenticate, after which 
 
 <pre>
     @PostMapping("/api/register")
-    public ResponseEntity<List<MyObject>> createPerson(@RequestBody @Valid PersonDTO personDTO){
-    ...
-    }
 </pre>
 
 
