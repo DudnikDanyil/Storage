@@ -1,6 +1,12 @@
 # Storage
 This is a Spring-based RESTful API that enables users to store, upload, download, modify, and delete files in a cloud storage system. Users can upload files to the storage and access them through their personal accounts.
 
+##Product test link
+http://195.189.227.45:3300/
+
+<span style="color:red;">WARNING!</span>
+Please note that our product is currently in a testing phase, and as such, all information on the server is cleared at 00:00 every day. To avoid the risk of losing important documents, we highly recommend saving a copy of them on your computer before uploading them to the server.
+
 ## Key technologies
 - [Spring Boot](https://spring.io/)
 - [Maven](https://maven.apache.org/)
