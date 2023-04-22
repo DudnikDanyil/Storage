@@ -195,6 +195,45 @@ If the files were not found:
 ]
 </pre>
 
+**- Loading**
+<pre>
+@PostMapping("/api/loading")
+</pre>
+Input parameters as a POST-query:
+<pre>
+[
+{
+"nameFile":"****",
+"dateFile":"2023-4-22",
+"sizeFile":"23",
+"typeFile":".docx"
+}
+...
+]
+</pre>
+
+And the files themselves in the form of bytecode under the key "fileFile"
+
+Return parameters:
+<pre>
+[
+{
+"nameFile":"****",
+"dateFile":"2023-4-22",
+"sizeFile":"23",
+"typeFile":".docx",
+"data":"true"
+}
+...
+]
+</pre>
+
+
+
+
+
+
+
 
 
 
