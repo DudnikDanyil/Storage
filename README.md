@@ -14,3 +14,10 @@ Our platform offers users the ability to register and authenticate, after which 
 ## API requests
 
 **Registration requests:**
+
+\```java
+    @PostMapping("/register")
+    public ResponseEntity<List<MyObject>> createPerson(@RequestBody @Valid PersonDTO personDTO){
+    }
+\```
+
