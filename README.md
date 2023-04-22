@@ -67,10 +67,10 @@ If a person has files on the server:
 <pre>
 [
 {
-"nameFile":Test.txt,
-"dateFile":00.00.0000,
-"sizeFile":23,
-"typeFile":.txt,
+"nameFile":"****",
+"dateFile":"2023-4-22",
+"sizeFile":"23",
+"typeFile":".docx",
 "data":"true"
 }
 ...
@@ -101,10 +101,10 @@ If a person has files on the server:
 <pre>
 [
 {
-"nameFile":Test.txt,
-"dateFile":00.00.0000,
-"sizeFile":23,
-"typeFile":.txt,
+"nameFile":"****",
+"dateFile":"2023-4-22",
+"sizeFile":"23",
+"typeFile":".docx",
 "data":"true"
 }
 ...
@@ -144,14 +144,56 @@ File download in progress
 <pre>
     @PutMapping(value = "/api/editing")
 </pre>
+Input parameters as a PUT-query:
+<pre>
+/api/editing?oldNameFile=****&newNameFile=****
+</pre>
+Return parameters:
+<pre>
+[
+{
+"nameFile":"****",
+"dateFile":"2023-4-22",
+"sizeFile":"23",
+"typeFile":".docx",
+"data":"true"
+}
+]
+</pre>
 
+**- Search**
+<pre>
+@GetMapping("/api/search")
+</pre>
+Input parameters as a GET-query:
+<pre>
+/api/search?nameFile=****
+</pre>
+Return parameters:
 
+If the files were found:
+<pre>
+[
+{
+"nameFile":"****",
+"dateFile":"2023-4-22",
+"sizeFile":"23",
+"typeFile":".docx",
+"data":"true"
+}
+...
+]
+</pre>
 
-
-
-
-
-
+If the files were not found:
+<pre>
+[
+{
+"data":"false",
+"errorMassage":"File matching the search will be rejected"
+}
+]
+</pre>
 
 
 
