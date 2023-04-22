@@ -76,6 +76,9 @@ If a person has files on the server:
 </pre>
 
 **- Authentication**
+<pre>
+    @GetMapping("/api/authentic")
+</pre>
 Input parameters as a POST-query:
 JWT-token
 Return parameters:
